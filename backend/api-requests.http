@@ -1,0 +1,19 @@
+# vscode extension "Humao Rest Client"
+
+@baseUrl = http://wandergold.local
+
+
+###
+
+GET {{baseUrl}}/products
+
+
+###
+
+POST {{baseUrl}}/products HTTP/1.1
+Content-Type: application/json
+
+{
+    "name": "Symfony Buch inkl. DI",
+    "price": 0
+}
