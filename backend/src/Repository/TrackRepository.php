@@ -19,6 +19,14 @@ class TrackRepository extends ServiceEntityRepository
         parent::__construct($registry, Track::class);
     }
 
+    public function save(Track $track): Track
+    {
+        $this->_em->persist($track);
+        $this->_em->flush();
+
+        return $track;
+    }
+
     // /**
     //  * @return Track[] Returns an array of Track objects
     //  */

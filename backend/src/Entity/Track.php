@@ -82,6 +82,11 @@ class Track
      */
     private $surface = [];
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_created;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -239,6 +244,18 @@ class Track
     public function setSurface(?array $surface): self
     {
         $this->surface = $surface;
+
+        return $this;
+    }
+
+    public function getDateCreated(): ?\DateTimeInterface
+    {
+        return $this->date_created;
+    }
+
+    public function setDateCreated(?\DateTimeInterface $date_created): self
+    {
+        $this->date_created = $date_created;
 
         return $this;
     }
