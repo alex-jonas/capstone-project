@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 
 export default function App() {
   const [tracks, setTracks] = useState([])
+
   useEffect(() => getTracks(), [])
 
   function getTracks() {
@@ -25,7 +26,7 @@ export default function App() {
           ))}
         </Route>
         <Route exact path="/signup">
-          Registrieren!
+          <div>Register</div>
         </Route>
       </Switch>
     </Router>
