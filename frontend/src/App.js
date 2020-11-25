@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import styled from 'styled-components/macro'
+import Start from './components/Start'
 
 export default function App() {
   const [tracks, setTracks] = useState([])
@@ -15,9 +16,12 @@ export default function App() {
   }
 
   return (
-    <Router>
+    <PageLayout>
       <Switch>
         <Route exact path="/">
+          <Start />
+        </Route>
+        <Route path="/tracklist">
           {tracks.map(({ id, description, title }) => (
             <Track key={id}>
               <p>{title}</p>
@@ -25,13 +29,24 @@ export default function App() {
             </Track>
           ))}
         </Route>
+
         <Route exact path="/signup">
           <div>Register</div>
         </Route>
       </Switch>
-    </Router>
+    </PageLayout>
   )
 }
+
+const PageLayout = styled.div`
+  display: grid;
+  grid-template-rows: auto 80px;
+  position: relative;
+  height: 100vh;
+  max-width: 500px;
+  margin: 0 auto;
+  box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 1);
+`
 
 const Track = styled.section`
   width: 300px;
