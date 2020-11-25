@@ -1,10 +1,21 @@
 import styled from 'styled-components/macro'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSvg from './../assets/wandergold.svg'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function Start() {
   const [isSearchFocused, setSearchFocus] = useState(false)
+  const [coordsToSearch, setCoordsToSearch] = useState({
+    latitude: null,
+    longitude: null,
+    locationName: '',
+  })
+
+  useEffect(() =>
+    console.log(
+      `https://www.google.com/maps/search/link+to+google/@${coordsToSearch.latitude},${coordsToSearch.longitude},14z`
+    )
+  )
 
   let inputClassName = ' location-search__input'
   if (isSearchFocused) inputClassName += inputClassName + '--active'
@@ -13,22 +24,50 @@ export default function Start() {
 
   return (
     <Wrapper>
-      <h1 className="logo-heading">
+      <h1 className="logo-heading" onClick={() => setSearchFocus(false)}>
         <img
           className="logo-heading__image"
           src={wandergoldSvg}
           alt="wandergold"
         />
       </h1>
-      <input
-        onFocus={() => setSearchFocus(true)}
-        onBlur={() => setSearchFocus(false)}
-        className={inputClassName}
-        type="text"
-        placeholder={inputPlaceHolder}
-      ></input>
+      <form className="location-search__form">
+        <input
+          onFocus={() => setSearchFocus(true)}
+          className={inputClassName}
+          type="text"
+          placeholder={inputPlaceHolder}
+        ></input>
+        {isSearchFocused && (
+          <section className="location-search__assistent">
+            <ul>
+              {navigator.geolocation && (
+                <li onClick={() => getGeolocationOfUser()}>Mein Standort</li>
+              )}
+              <li onClick={() => getGeolocationOfUser()}>Berlin</li>
+              <li onClick={() => getGeolocationOfUser()}>djal</li>
+              <li onClick={() => getGeolocationOfUser()}>ladsas</li>
+            </ul>
+          </section>
+        )}
+      </form>
     </Wrapper>
   )
+
+  function getGeolocationOfUser() {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        setCoordsToSearch({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          locationName: 'Mein Standort',
+        })
+      },
+      function (error) {
+        alert('Fehler')
+      }
+    )
+  }
 }
 
 const Wrapper = styled.div`
@@ -42,7 +81,7 @@ const Wrapper = styled.div`
   background-position-x: center;
   background-repeat: no-repeat;
   text-align: center;
-  padding: 40px;
+  padding: 10%;
 
   .logo-heading {
     margin: 0;
@@ -55,6 +94,11 @@ const Wrapper = styled.div`
     width: 100%;
   }
 
+  .location-search__form {
+    position: relative;
+    bottom: -53%;
+  }
+
   .location-search__input {
     display: grid;
     place-content: center;
@@ -62,9 +106,8 @@ const Wrapper = styled.div`
     outline: none;
     border: none;
     background-color: #ffffff75;
-    position: relative;
-    bottom: -53%;
     width: 50%;
+    min-width: 150px;
     margin: 0 auto;
     padding: 10px;
     border-radius: 20px;
@@ -78,6 +121,27 @@ const Wrapper = styled.div`
     background-color: #ffffff;
     width: 100%;
     font-size: 1.2em;
-    transform: translateY(-100px);
+    transform: translateY(-5px);
+  }
+
+  .location-search__assistent {
+    background: #ffffff90;
+    max-height: 250px;
+    overflow: scroll;
+  }
+
+  .location-search__assistent {
+    position: relative;
+    top: -22px;
+    ul {
+      list-style: none;
+      margin-left: 0;
+      padding-left: 0;
+
+      li {
+        padding: 10px;
+        letter-spacing: 0.3em;
+      }
+    }
   }
 `

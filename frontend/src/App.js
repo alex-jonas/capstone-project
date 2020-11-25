@@ -44,6 +44,7 @@ const PageLayout = styled.div`
   position: relative;
   height: 100vh;
   max-width: 500px;
+  min-width: 250px;
   margin: 0 auto;
   box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 1);
 `
