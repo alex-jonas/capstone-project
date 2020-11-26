@@ -2,8 +2,14 @@ import styled from 'styled-components/macro'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSvg from './../assets/wandergold.svg'
 import { useState, useEffect } from 'react'
+import Geocode from 'react-geocode'
 
 export default function Start() {
+  Geocode.setApiKey('AIzaSyDZJTQ_zk-aXNr5gH8Si82_AOHiUmVXDJg')
+  Geocode.setLanguage('de')
+  Geocode.setRegion('de')
+  Geocode.enableDebug()
+
   const [isSearchFocused, setSearchFocus] = useState(false)
   const [coordsToSearch, setCoordsToSearch] = useState({
     latitude: null,
@@ -11,11 +17,17 @@ export default function Start() {
     locationName: '',
   })
 
-  useEffect(() =>
-    console.log(
-      `https://www.google.com/maps/search/link+to+google/@${coordsToSearch.latitude},${coordsToSearch.longitude},14z`
+  useEffect(() => {
+    Geocode.fromLatLng(coordsToSearch.latitude, coordsToSearch.longitude).then(
+      (response) => {
+        const address = response.results[0].formatted_address
+        console.log('hallo', address)
+      },
+      (error) => {
+        console.error(error)
+      }
     )
-  )
+  })
   return (
     <Wrapper>
       <LogoHeading onClick={() => setSearchFocus(false)}>
@@ -32,7 +44,15 @@ export default function Start() {
           <SearchSuggestions>
             <ul>
               {navigator.geolocation && (
-                <li onClick={() => getGeolocationOfUser()}>Mein Standort</li>
+                <>
+                  <li
+                    className="geoLocator"
+                    onClick={() => getGeolocationOfUser()}
+                  >
+                    Mein Standort
+                  </li>
+                  <li>nfskladjlkasdklasandjkokl</li>
+                </>
               )}
             </ul>
           </SearchSuggestions>
@@ -116,18 +136,23 @@ const LocationSearch = styled.form`
 const SearchSuggestions = styled.div`
   background: #ffffff95;
   border-radius: 5px;
+  max-width: 100%;
   max-height: 250px;
   overflow: scroll;
-  position: relative;
-  top: -22px;
+
   ul {
     list-style: none;
     margin-left: 0;
-    padding-left: 0;
+    padding: 5px;
 
     li {
-      padding: 10px;
-      letter-spacing: 0.3em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    li.geoLocator {
+      border-bottom: 1px solid grey;
     }
   }
 `
