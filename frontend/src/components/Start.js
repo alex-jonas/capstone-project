@@ -31,14 +31,18 @@ export default function Start() {
   })
   const [suggestionList, setSuggestionList] = useState([])
 
-  function getSuggestions(string) {
-    const url = `//maps.googleapis.com/maps/api/place/autocomplete/json?input=${string}&key=AIzaSyDZJTQ_zk-aXNr5gH8Si82_AOHiUmVXDJg&sessiontoken=1234567890&language=de`
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => setSuggestionList(data))
-      .catch((error) => console.error('Error:', error))
+  function getSuggestions(placeString) {
+    const place = placeString.trim()
+    if (place.length > 3) {
+      const url = `https://alexjonas.de/gc/?p=${place}`
+      fetch(url)
+        .then((res) => res.json())
+        .then(({ predictions }) => setSuggestionList(predictions))
+        .catch((error) => console.error('Error:', error))
+    } else {
+      setSuggestionList([])
+    }
   }
-  useEffect(() => console.log(suggestionList))
 
   return (
     <Wrapper>
@@ -70,33 +74,10 @@ export default function Start() {
                   >
                     Mein Standort
                   </li>
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>{' '}
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>{' '}
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>{' '}
-                  <li>
-                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
-                  </li>
+
+                  {suggestionList.map(({ description }) => (
+                    <li>{description}</li>
+                  ))}
                 </>
               )}
             </ul>
