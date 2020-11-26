@@ -1,6 +1,9 @@
 import styled from 'styled-components/macro'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSvg from './../assets/wandergold.svg'
+import closeSvg from './../assets/close.svg'
+import compassSvg from './../assets/compass.svg'
+
 import { useState, useEffect } from 'react'
 import Geocode from 'react-geocode'
 
@@ -10,12 +13,23 @@ export default function Start() {
   Geocode.setRegion('de')
   Geocode.enableDebug()
 
+  Geocode.fromAddress('Eiffel Tower').then(
+    (response) => {
+      const { lat, lng } = response.results[0].geometry.location
+      console.log('shabba', lat, lng)
+    },
+    (error) => {
+      console.error(error)
+    }
+  )
+
   const [isSearchFocused, setSearchFocus] = useState(false)
   const [coordsToSearch, setCoordsToSearch] = useState({
     latitude: null,
     longitude: null,
     locationName: '',
   })
+  const [suggestionList, setSuggestionList] = useState([])
 
   useEffect(() => {
     Geocode.fromLatLng(coordsToSearch.latitude, coordsToSearch.longitude).then(
@@ -30,16 +44,22 @@ export default function Start() {
   })
   return (
     <Wrapper>
-      <LogoHeading onClick={() => setSearchFocus(false)}>
+      <LogoArea onClick={() => setSearchFocus(false)}>
         <img src={wandergoldSvg} alt="wandergold" />
-      </LogoHeading>
+      </LogoArea>
       <LocationSearch>
-        <input
-          onFocus={() => setSearchFocus(true)}
-          className={isSearchFocused && 'active'}
-          type="text"
-          placeholder={!isSearchFocused && 'wo willst du hin?'}
-        ></input>
+        <SearchField className={isSearchFocused && 'active'}>
+          {isSearchFocused && (
+            <button type="button" onClick={() => setSearchFocus(false)}>
+              <img src={closeSvg} alt="close" />
+            </button>
+          )}
+          <input
+            onFocus={() => setSearchFocus(true)}
+            type="text"
+            placeholder={!isSearchFocused && 'wo willst du hin?'}
+          ></input>
+        </SearchField>
         {isSearchFocused && (
           <SearchSuggestions>
             <ul>
@@ -51,7 +71,33 @@ export default function Start() {
                   >
                     Mein Standort
                   </li>
-                  <li>nfskladjlkasdklasandjkokl</li>
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>{' '}
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>{' '}
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>{' '}
+                  <li>
+                    nfskladjlkasdklasandjkokjkladsjdlksajdklasjdklasjdlkasdjaklsdjakldjsakll
+                  </li>
                 </>
               )}
             </ul>
@@ -67,7 +113,7 @@ export default function Start() {
         setCoordsToSearch({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          locationName: 'Mein Standort',
+          locationName: 'Nimm meinen Standort',
         })
       },
       function (error) {
@@ -78,81 +124,113 @@ export default function Start() {
 }
 
 const Wrapper = styled.div`
-  position: relative;
-  left: 0;
-  top: 0;
   width: 100%;
   height: 100vh;
+  display: grid;
+  grid-template-rows: 60% 40%;
   background-image: url(${startscreenJpg});
   background-size: auto 100vh;
   background-position-x: center;
   background-repeat: no-repeat;
-  text-align: center;
-  padding: 10%;
+  padding: 5%;
+  padding-top: 0;
 `
 
-const LogoHeading = styled.h1`
-  margin: 0;
-  position: relative;
-  top: 16%;
-  line-height: 1;
+const LogoArea = styled.div`
+  display: grid;
+  place-items: center;
+
+  h1 {
+    line-height: 1;
+  }
 
   img {
-    width: 100%;
+    width: 90%;
   }
 `
 
 const LocationSearch = styled.form`
-  position: relative;
-  bottom: -53%;
+  display: grid;
+  grid-template-rows: 45px auto;
+  place-items: start center;
+  gap: 10px;
   text-align: left;
 
-  input {
-    display: grid;
-    place-content: center;
-    font-size: 0.8em;
-    outline: none;
+  .active {
+    font-size: 1.2em;
+    width: 100%;
+    background: white;
+  }
+`
+
+const SearchField = styled.div`
+  width: 50%;
+  min-width: 150px;
+  padding: 10px;
+  border-radius: 20px;
+  background-color: #ffffff75;
+  box-shadow: 0px 0px 25px 0px var(--primary-brown);
+  transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out,
+    font-size 0.5s ease-in-out, transform 0.5s ease-in-out;
+  font-size: 0.8em;
+  line-height: 1;
+  white-space: nowrap;
+  button {
+    background: transparent;
     border: none;
-    background-color: #ffffff75;
-    width: 50%;
-    min-width: 150px;
-    margin: 0 auto;
-    padding: 10px;
-    padding-left: 15px;
-    border-radius: 20px;
-    transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out,
-      font-size 0.5s ease-in-out, transform 0.5s ease-in-out;
-    box-shadow: 0px 0px 25px 0px var(--primary-brown);
+    padding: 0;
+
+    img {
+      margin-right: 5px;
+      width: 20px;
+      height: 20px;
+    }
   }
 
-  input.active {
-    background-color: #ffffff;
-    width: 100%;
-    font-size: 1.2em;
-    transform: translateY(-5px);
+  input {
+    font-size: 1em;
+    outline: none;
+    border: none;
+    background: transparent;
+    width: calc(90%-20px);
   }
 `
 
 const SearchSuggestions = styled.div`
   background: #ffffff95;
   border-radius: 5px;
-  max-width: 100%;
+  width: 100%;
   max-height: 250px;
   overflow: scroll;
+  overflow-x: hidden;
+  font-size: 0.9em;
 
   ul {
     list-style: none;
-    margin-left: 0;
+    margin: 0;
     padding: 5px;
+    overflow-x: hidden;
 
     li {
       white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
+      overflow-x: hidden;
+      padding: 8px;
+      border-radius: 5px;
     }
 
     li.geoLocator {
       border-bottom: 1px solid grey;
+      background-image: url(${compassSvg});
+      background-repeat: no-repeat;
+      background-size: 15px;
+      background-position-y: center;
+      background-position-x: 2px;
+      padding-left: 25px;
+    }
+
+    li:hover {
+      background-color: white;
     }
   }
 `

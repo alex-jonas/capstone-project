@@ -39,10 +39,8 @@ export default function App() {
 }
 
 const PageLayout = styled.div`
-  display: grid;
-  grid-template-rows: auto 80px;
-  position: relative;
   height: 100vh;
+  width: 100%;
   max-width: 500px;
   min-width: 250px;
   margin: 0 auto;
