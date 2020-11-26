@@ -16,41 +16,28 @@ export default function Start() {
       `https://www.google.com/maps/search/link+to+google/@${coordsToSearch.latitude},${coordsToSearch.longitude},14z`
     )
   )
-
-  let inputClassName = ' location-search__input'
-  if (isSearchFocused) inputClassName += inputClassName + '--active'
-
-  let inputPlaceHolder = isSearchFocused ? '' : 'wo willst du hin?'
-
   return (
     <Wrapper>
-      <h1 className="logo-heading" onClick={() => setSearchFocus(false)}>
-        <img
-          className="logo-heading__image"
-          src={wandergoldSvg}
-          alt="wandergold"
-        />
-      </h1>
-      <form className="location-search__form">
+      <LogoHeading onClick={() => setSearchFocus(false)}>
+        <img src={wandergoldSvg} alt="wandergold" />
+      </LogoHeading>
+      <LocationSearch>
         <input
           onFocus={() => setSearchFocus(true)}
-          className={inputClassName}
+          className={isSearchFocused && 'active'}
           type="text"
-          placeholder={inputPlaceHolder}
+          placeholder={!isSearchFocused && 'wo willst du hin?'}
         ></input>
         {isSearchFocused && (
-          <section className="location-search__assistent">
+          <SearchSuggestions>
             <ul>
               {navigator.geolocation && (
                 <li onClick={() => getGeolocationOfUser()}>Mein Standort</li>
               )}
-              <li onClick={() => getGeolocationOfUser()}>Berlin</li>
-              <li onClick={() => getGeolocationOfUser()}>djal</li>
-              <li onClick={() => getGeolocationOfUser()}>ladsas</li>
             </ul>
-          </section>
+          </SearchSuggestions>
         )}
-      </form>
+      </LocationSearch>
     </Wrapper>
   )
 
@@ -82,24 +69,25 @@ const Wrapper = styled.div`
   background-repeat: no-repeat;
   text-align: center;
   padding: 10%;
+`
 
-  .logo-heading {
-    margin: 0;
-    position: relative;
-    top: 16%;
-    line-height: 1;
-  }
+const LogoHeading = styled.h1`
+  margin: 0;
+  position: relative;
+  top: 16%;
+  line-height: 1;
 
-  .logo-heading__image {
+  img {
     width: 100%;
   }
+`
 
-  .location-search__form {
-    position: relative;
-    bottom: -53%;
-  }
+const LocationSearch = styled.form`
+  position: relative;
+  bottom: -53%;
+  text-align: left;
 
-  .location-search__input {
+  input {
     display: grid;
     place-content: center;
     font-size: 0.8em;
@@ -110,38 +98,36 @@ const Wrapper = styled.div`
     min-width: 150px;
     margin: 0 auto;
     padding: 10px;
+    padding-left: 15px;
     border-radius: 20px;
-    text-align: center;
     transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out,
       font-size 0.5s ease-in-out, transform 0.5s ease-in-out;
     box-shadow: 0px 0px 25px 0px var(--primary-brown);
   }
 
-  .location-search__input--active {
+  input.active {
     background-color: #ffffff;
     width: 100%;
     font-size: 1.2em;
     transform: translateY(-5px);
   }
+`
 
-  .location-search__assistent {
-    background: #ffffff90;
-    max-height: 250px;
-    overflow: scroll;
-  }
+const SearchSuggestions = styled.div`
+  background: #ffffff95;
+  border-radius: 5px;
+  max-height: 250px;
+  overflow: scroll;
+  position: relative;
+  top: -22px;
+  ul {
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
 
-  .location-search__assistent {
-    position: relative;
-    top: -22px;
-    ul {
-      list-style: none;
-      margin-left: 0;
-      padding-left: 0;
-
-      li {
-        padding: 10px;
-        letter-spacing: 0.3em;
-      }
+    li {
+      padding: 10px;
+      letter-spacing: 0.3em;
     }
   }
 `
