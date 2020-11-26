@@ -31,17 +31,15 @@ export default function Start() {
   })
   const [suggestionList, setSuggestionList] = useState([])
 
-  useEffect(() => {
-    Geocode.fromLatLng(coordsToSearch.latitude, coordsToSearch.longitude).then(
-      (response) => {
-        const address = response.results[0].formatted_address
-        console.log('hallo', address)
-      },
-      (error) => {
-        console.error(error)
-      }
-    )
-  })
+  function getSuggestions(string) {
+    const url = `//maps.googleapis.com/maps/api/place/autocomplete/json?input=${string}&key=AIzaSyDZJTQ_zk-aXNr5gH8Si82_AOHiUmVXDJg&sessiontoken=1234567890&language=de`
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setSuggestionList(data))
+      .catch((error) => console.error('Error:', error))
+  }
+  useEffect(() => console.log(suggestionList))
+
   return (
     <Wrapper>
       <LogoArea onClick={() => setSearchFocus(false)}>
@@ -55,6 +53,7 @@ export default function Start() {
             </button>
           )}
           <input
+            onChange={(event) => getSuggestions(event.target.value)}
             onFocus={() => setSearchFocus(true)}
             type="text"
             placeholder={!isSearchFocused && 'wo willst du hin?'}
