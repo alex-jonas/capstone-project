@@ -3,9 +3,11 @@ import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSvg from './../assets/wandergold.svg'
 import closeSvg from './../assets/close.svg'
 import compassSvg from './../assets/compass.svg'
-
 import { useState, useEffect } from 'react'
 import Geocode from 'react-geocode'
+import PropTypes from 'prop-types'
+
+Start.propTypes = {}
 
 export default function Start() {
   Geocode.setApiKey('AIzaSyDZJTQ_zk-aXNr5gH8Si82_AOHiUmVXDJg')
@@ -16,7 +18,6 @@ export default function Start() {
   Geocode.fromAddress('Eiffel Tower').then(
     (response) => {
       const { lat, lng } = response.results[0].geometry.location
-      console.log('shabba', lat, lng)
     },
     (error) => {
       console.error(error)
@@ -28,8 +29,11 @@ export default function Start() {
     latitude: null,
     longitude: null,
     locationName: '',
+    googlePlaceId: '',
   })
   const [suggestionList, setSuggestionList] = useState([])
+
+  useEffect(() => console.log(coordsToSearch))
 
   function getSuggestions(placeString) {
     const place = placeString.trim()
@@ -37,7 +41,7 @@ export default function Start() {
       const url = `https://alexjonas.de/gc/?p=${place}`
       fetch(url)
         .then((res) => res.json())
-        .then(({ predictions }) => setSuggestionList(predictions))
+        .then(({ predictions }) => setSuggestionList(predictions.slice(1, 5)))
         .catch((error) => console.error('Error:', error))
     } else {
       setSuggestionList([])
@@ -47,7 +51,9 @@ export default function Start() {
   return (
     <Wrapper>
       <LogoArea onClick={() => setSearchFocus(false)}>
-        <img src={wandergoldSvg} alt="wandergold" />
+        <h1>
+          <img src={wandergoldSvg} alt="wandergold" />
+        </h1>
       </LogoArea>
       <LocationSearch>
         <SearchField className={isSearchFocused && 'active'}>
@@ -75,8 +81,20 @@ export default function Start() {
                     Mein Standort
                   </li>
 
-                  {suggestionList.map(({ description }) => (
-                    <li>{description}</li>
+                  {suggestionList.map(({ description, place_id }) => (
+                    <li
+                      onClick={() =>
+                        setCoordsToSearch({
+                          latitude: 51.111,
+                          longitude: 12.22323,
+                          description: description,
+                          googlePlaceId: place_id,
+                        })
+                      }
+                      key={place_id}
+                    >
+                      {description}
+                    </li>
                   ))}
                 </>
               )}
@@ -93,11 +111,11 @@ export default function Start() {
         setCoordsToSearch({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
-          locationName: 'Nimm meinen Standort',
+          locationName: 'Mein Standort',
         })
       },
       function (error) {
-        alert('Fehler')
+        console.error(error)
       }
     )
   }
@@ -118,10 +136,11 @@ const Wrapper = styled.div`
 
 const LogoArea = styled.div`
   display: grid;
-  place-items: center;
+  place-items: center stretch;
 
   h1 {
     line-height: 1;
+    text-align: center;
   }
 
   img {
@@ -177,11 +196,11 @@ const SearchField = styled.div`
 `
 
 const SearchSuggestions = styled.div`
-  background: #ffffff95;
+  background: #ffffff97;
   border-radius: 5px;
   width: 100%;
-  max-height: 250px;
-  overflow: scroll;
+  max-height: 100%;
+  overflow-y: scroll;
   overflow-x: hidden;
   font-size: 0.9em;
 
