@@ -41,7 +41,7 @@ export default function Start() {
       const url = `http://wandergold.local/ac/${place}`
       fetch(url)
         .then((res) => res.json())
-        .then(({ predictions }) => setSuggestionList(predictions.slice(1, 5)))
+        .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
         .catch((error) => console.error('Error:', error))
     } else {
       setSuggestionList([])
