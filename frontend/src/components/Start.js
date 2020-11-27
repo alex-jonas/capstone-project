@@ -38,7 +38,7 @@ export default function Start() {
   function getSuggestions(placeString) {
     const place = placeString.trim()
     if (place.length > 3) {
-      const url = `https://alexjonas.de/gc/?p=${place}`
+      const url = `http://wandergold.local/ac/${place}`
       fetch(url)
         .then((res) => res.json())
         .then(({ predictions }) => setSuggestionList(predictions.slice(1, 5)))
