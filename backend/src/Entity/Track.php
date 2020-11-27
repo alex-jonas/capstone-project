@@ -28,11 +28,6 @@ class Track
     private $kml_file;
 
     /**
-     * @ORM\Column(type="array")
-     */
-    private $start_coord = [];
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $title;
@@ -58,11 +53,6 @@ class Track
     private $difficulty;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $dureation_min;
-
-    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $tansport_station;
@@ -81,6 +71,26 @@ class Track
      * @ORM\Column(type="array", nullable=true)
      */
     private $surface = [];
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_created;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $duration_min;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $first_lat;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $first_lon;
 
     public function getId(): ?int
     {
@@ -107,18 +117,6 @@ class Track
     public function setKmlFile(string $kml_file): self
     {
         $this->kml_file = $kml_file;
-
-        return $this;
-    }
-
-    public function getStartCoord(): ?array
-    {
-        return $this->start_coord;
-    }
-
-    public function setStartCoord(array $start_coord): self
-    {
-        $this->start_coord = $start_coord;
 
         return $this;
     }
@@ -183,18 +181,6 @@ class Track
         return $this;
     }
 
-    public function getDureationMin(): ?int
-    {
-        return $this->dureation_min;
-    }
-
-    public function setDureationMin(?int $dureation_min): self
-    {
-        $this->dureation_min = $dureation_min;
-
-        return $this;
-    }
-
     public function getTansportStation(): ?string
     {
         return $this->tansport_station;
@@ -239,6 +225,54 @@ class Track
     public function setSurface(?array $surface): self
     {
         $this->surface = $surface;
+
+        return $this;
+    }
+
+    public function getDateCreated(): ?\DateTimeInterface
+    {
+        return $this->date_created;
+    }
+
+    public function setDateCreated(?\DateTimeInterface $date_created): self
+    {
+        $this->date_created = $date_created;
+
+        return $this;
+    }
+
+    public function getDurationMin(): ?int
+    {
+        return $this->duration_min;
+    }
+
+    public function setDurationMin(?int $duration_min): self
+    {
+        $this->duration_min = $duration_min;
+
+        return $this;
+    }
+
+    public function getFirstLat(): ?float
+    {
+        return $this->first_lat;
+    }
+
+    public function setFirstLat(float $first_lat): self
+    {
+        $this->first_lat = $first_lat;
+
+        return $this;
+    }
+
+    public function getFirstLon(): ?float
+    {
+        return $this->first_lon;
+    }
+
+    public function setFirstLon(float $first_lon): self
+    {
+        $this->first_lon = $first_lon;
 
         return $this;
     }
