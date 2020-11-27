@@ -99,6 +99,7 @@ export default function Start() {
                 </>
               )}
             </ul>
+            <button>Tour finden</button>
           </SearchSuggestions>
         )}
       </LocationSearch>
@@ -203,11 +204,22 @@ const SearchSuggestions = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   font-size: 0.9em;
+  padding: 5px;
+
+  button {
+    width: 100%;
+    background: var(--primary-green);
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    color: white;
+    padding: 5px;
+  }
 
   ul {
     list-style: none;
     margin: 0;
-    padding: 5px;
+    padding: 0;
     overflow-x: hidden;
 
     li {
