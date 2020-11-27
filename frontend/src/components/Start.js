@@ -4,26 +4,8 @@ import wandergoldSvg from './../assets/wandergold.svg'
 import closeSvg from './../assets/close.svg'
 import compassSvg from './../assets/compass.svg'
 import { useState, useEffect } from 'react'
-import Geocode from 'react-geocode'
-import PropTypes from 'prop-types'
-
-Start.propTypes = {}
 
 export default function Start() {
-  Geocode.setApiKey('AIzaSyDZJTQ_zk-aXNr5gH8Si82_AOHiUmVXDJg')
-  Geocode.setLanguage('de')
-  Geocode.setRegion('de')
-  Geocode.enableDebug()
-
-  Geocode.fromAddress('Eiffel Tower').then(
-    (response) => {
-      const { lat, lng } = response.results[0].geometry.location
-    },
-    (error) => {
-      console.error(error)
-    }
-  )
-
   const [isSearchFocused, setSearchFocus] = useState(false)
   const [coordsToSearch, setCoordsToSearch] = useState({
     latitude: null,
@@ -34,19 +16,6 @@ export default function Start() {
   const [suggestionList, setSuggestionList] = useState([])
 
   useEffect(() => console.log(coordsToSearch))
-
-  function getSuggestions(placeString) {
-    const place = placeString.trim()
-    if (place.length > 3) {
-      const url = `http://wandergold.local/ac/${place}`
-      fetch(url)
-        .then((res) => res.json())
-        .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
-        .catch((error) => console.error('Error:', error))
-    } else {
-      setSuggestionList([])
-    }
-  }
 
   return (
     <Wrapper>
@@ -72,32 +41,32 @@ export default function Start() {
         {isSearchFocused && (
           <SearchSuggestions>
             <ul>
-              {navigator.geolocation && (
-                <>
+              <>
+                {navigator.geolocation && (
                   <li
                     className="geoLocator"
                     onClick={() => getGeolocationOfUser()}
                   >
                     Mein Standort
                   </li>
+                )}
 
-                  {suggestionList.map(({ description, place_id }) => (
-                    <li
-                      onClick={() =>
-                        setCoordsToSearch({
-                          latitude: 51.111,
-                          longitude: 12.22323,
-                          description: description,
-                          googlePlaceId: place_id,
-                        })
-                      }
-                      key={place_id}
-                    >
-                      {description}
-                    </li>
-                  ))}
-                </>
-              )}
+                {suggestionList.map(({ description, place_id }) => (
+                  <li
+                    onClick={() =>
+                      setCoordsToSearch({
+                        latitude: 51.111,
+                        longitude: 12.22323,
+                        description: description,
+                        googlePlaceId: place_id,
+                      })
+                    }
+                    key={place_id}
+                  >
+                    {description}
+                  </li>
+                ))}
+              </>
             </ul>
             <button>Tour finden</button>
           </SearchSuggestions>
@@ -119,6 +88,19 @@ export default function Start() {
         console.error(error)
       }
     )
+  }
+
+  function getSuggestions(placeString) {
+    const place = placeString.trim()
+    if (place.length > 3) {
+      const url = `http://wandergold.local/ac/${place}`
+      fetch(url)
+        .then((res) => res.json())
+        .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
+        .catch((error) => console.error('Error:', error))
+    } else {
+      setSuggestionList([])
+    }
   }
 }
 
@@ -159,7 +141,7 @@ const LocationSearch = styled.form`
   .active {
     font-size: 1.2em;
     width: 100%;
-    background: white;
+    background: #fff;
   }
 `
 
@@ -241,7 +223,7 @@ const SearchSuggestions = styled.div`
     }
 
     li:hover {
-      background-color: white;
+      background-color: #fff;
     }
   }
 `
