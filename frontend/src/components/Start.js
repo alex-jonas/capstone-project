@@ -1,39 +1,36 @@
 import styled from 'styled-components/macro'
 import startscreenJpg from './../assets/startscreen.jpg'
-import wandergoldSvg from './../assets/wandergold.svg'
-import closeSvg from './../assets/close.svg'
-import compassSvg from './../assets/compass.svg'
-import { useState, useEffect } from 'react'
+import wandergoldSrc from './../assets/wandergold.svg'
+import closeSrc from './../assets/close.svg'
+import compassSrc from './../assets/compass.svg'
+import { useState } from 'react'
+import PropTypes from 'prop-types'
 
-export default function Start() {
-  const [isSearchFocused, setSearchFocus] = useState(false)
-  const [coordsToSearch, setCoordsToSearch] = useState({
-    latitude: null,
-    longitude: null,
-    locationName: '',
-    googlePlaceId: '',
-  })
+Start.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+}
+
+export default function Start({ handleSubmit }) {
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [suggestionList, setSuggestionList] = useState([])
-
-  useEffect(() => console.log(coordsToSearch))
 
   return (
     <Wrapper>
-      <LogoArea onClick={() => setSearchFocus(false)}>
+      <LogoArea onClick={() => setIsSearchFocused(false)}>
         <h1>
-          <img src={wandergoldSvg} alt="wandergold" />
+          <img src={wandergoldSrc} alt="wandergold" />
         </h1>
       </LogoArea>
       <LocationSearch>
-        <SearchField className={isSearchFocused && 'active'}>
+        <SearchField active={isSearchFocused}>
           {isSearchFocused && (
-            <button type="button" onClick={() => setSearchFocus(false)}>
-              <img src={closeSvg} alt="close" />
+            <button type="button" onClick={() => setIsSearchFocused(false)}>
+              <img src={closeSrc} alt="close" />
             </button>
           )}
           <input
             onChange={(event) => getSuggestions(event.target.value)}
-            onFocus={() => setSearchFocus(true)}
+            onFocus={() => setIsSearchFocused(true)}
             type="text"
             placeholder={!isSearchFocused && 'wo willst du hin?'}
           ></input>
@@ -54,11 +51,10 @@ export default function Start() {
                 {suggestionList.map(({ description, place_id }) => (
                   <li
                     onClick={() =>
-                      setCoordsToSearch({
-                        latitude: 51.111,
-                        longitude: 12.22323,
+                      handleSubmit({
                         description: description,
                         googlePlaceId: place_id,
+                        readyToSearch: true,
                       })
                     }
                     key={place_id}
@@ -78,10 +74,11 @@ export default function Start() {
   function getGeolocationOfUser() {
     navigator.geolocation.getCurrentPosition(
       function (position) {
-        setCoordsToSearch({
+        handleSubmit({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           locationName: 'Mein Standort',
+          readyToSearch: true,
         })
       },
       function (error) {
@@ -93,7 +90,7 @@ export default function Start() {
   function getSuggestions(placeString) {
     const place = placeString.trim()
     if (place.length > 3) {
-      const url = `http://wandergold.local/ac/${place}`
+      const url = `http://wandergold.local/autocomplete/${place}`
       fetch(url)
         .then((res) => res.json())
         .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
@@ -137,24 +134,18 @@ const LocationSearch = styled.form`
   place-items: start center;
   gap: 10px;
   text-align: left;
-
-  .active {
-    font-size: 1.2em;
-    width: 100%;
-    background: #fff;
-  }
 `
 
 const SearchField = styled.div`
-  width: 50%;
+  width: ${(props) => (props.active ? '100%' : '50%')};
   min-width: 150px;
   padding: 10px;
   border-radius: 20px;
-  background-color: #ffffff75;
+  background-color: ${(props) => (props.active ? '#fff' : '#ffffff75')};
   box-shadow: 0px 0px 25px 0px var(--primary-brown);
   transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out,
     font-size 0.5s ease-in-out, transform 0.5s ease-in-out;
-  font-size: 0.8em;
+  font-size: ${(props) => (props.active ? '1.2em' : '0.8em')};
   line-height: 1;
   white-space: nowrap;
   button {
@@ -214,7 +205,7 @@ const SearchSuggestions = styled.div`
 
     li.geoLocator {
       border-bottom: 1px solid grey;
-      background-image: url(${compassSvg});
+      background-image: url(${compassSrc});
       background-repeat: no-repeat;
       background-size: 15px;
       background-position-y: center;

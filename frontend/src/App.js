@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import Start from './components/Start'
 
@@ -7,6 +7,16 @@ export default function App() {
   const [tracks, setTracks] = useState([])
 
   useEffect(() => getTracks(), [])
+
+  const [startingPoint, setStartingPoint] = useState({
+    latitude: null,
+    longitude: null,
+    locationName: '',
+    googlePlaceId: '',
+    readyToSearch: false,
+  })
+
+  useEffect(() => console.log(startingPoint))
 
   function getTracks() {
     fetch('http://wandergold.local/track')
@@ -19,7 +29,11 @@ export default function App() {
     <PageLayout>
       <Switch>
         <Route exact path="/">
-          <Start />
+          {startingPoint.readyToSearch ? (
+            <Redirect to="/tracklist" />
+          ) : (
+            <Start handleSubmit={setStartingPoint} />
+          )}
         </Route>
         <Route path="/tracklist">
           {tracks.map(({ id, description, title }) => (
@@ -44,7 +58,7 @@ const PageLayout = styled.div`
   max-width: 500px;
   min-width: 250px;
   margin: 0 auto;
-  box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 1);
+  box-shadow: 0px 0px 25px 0px #000;
 `
 
 const Track = styled.section`
