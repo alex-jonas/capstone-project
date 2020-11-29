@@ -16,6 +16,14 @@ class AutocompleteController extends AbstractController
     public function index(string $place, HttpClientInterface $client): JsonResponse
     {
 
+        if (!$place) {
+            return new JsonResponse(
+                ['success' => 'no'],
+                JsonResponse::HTTP_BAD_REQUEST,
+                []
+            );
+        }
+
         $this->client = $client;
 
         $response = $this->client->request(
@@ -27,6 +35,7 @@ class AutocompleteController extends AbstractController
 
         if ($statusCode === 200) {
             $content = $response->getContent();
+
             return new JsonResponse(
                 $content,
                 JsonResponse::HTTP_OK,
