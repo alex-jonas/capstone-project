@@ -36,9 +36,11 @@ export default function App() {
           )}
         </Route>
         <Route path="/tracklist">
-          {tracks.map(({ id, description, title }) => (
+          {tracks.map(({ id, description, title }, index) => (
             <Track key={id}>
-              <p>{title}</p>
+              <h2>
+                {index + 1} {title}
+              </h2>
               <p>{description}</p>
             </Track>
           ))}
@@ -63,6 +65,10 @@ const PageLayout = styled.div`
 
 const Track = styled.section`
   width: 300px;
-  height: 150px;
   background: #eee;
+
+  h2 {
+    font-family: 'Kanit', sans-serif;
+    font-size: 1.2em;
+  }
 `
