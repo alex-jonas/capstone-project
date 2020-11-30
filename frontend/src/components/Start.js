@@ -33,7 +33,7 @@ export default function Start({ handleSubmit }) {
             onFocus={() => setIsSearchFocused(true)}
             type="text"
             placeholder={!isSearchFocused && 'wo willst du hin?'}
-          ></input>
+          />
         </SearchField>
         {isSearchFocused && (
           <SearchSuggestions>
