@@ -7,4 +7,5 @@
 /var/
 /vendor/
 /api-requests.http
+/.DS_Store
 ###< symfony/framework-bundle ###
