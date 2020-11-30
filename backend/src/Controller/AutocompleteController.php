@@ -28,7 +28,7 @@ class AutocompleteController extends AbstractController
 
         $response = $this->client->request(
             'GET',
-            "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$place&key=AIzaSyBAgxQxVs-1QnBLbskYaO6MDRM0cQnrcKo&language=de"
+            "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$place&key=APIKEY&language=de"
         );
 
         $statusCode = $response->getStatusCode();

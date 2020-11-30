@@ -13,7 +13,7 @@ export default function App() {
     longitude: null,
     locationName: '',
     googlePlaceId: '',
-    readyToSearch: false,
+    isReadyToSearch: false,
   })
 
   useEffect(() => console.log(startingPoint))
@@ -29,7 +29,7 @@ export default function App() {
     <PageLayout>
       <Switch>
         <Route exact path="/">
-          {startingPoint.readyToSearch ? (
+          {startingPoint.isReadyToSearch ? (
             <Redirect to="/tracklist" />
           ) : (
             <Start handleSubmit={setStartingPoint} />
@@ -70,5 +70,7 @@ const Track = styled.section`
   h2 {
     font-family: 'Kanit', sans-serif;
     font-size: 1.2em;
+    line-height: 1;
+    color: var(--heading-color);
   }
 `

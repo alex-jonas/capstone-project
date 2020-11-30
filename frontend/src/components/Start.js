@@ -54,7 +54,7 @@ export default function Start({ handleSubmit }) {
                       handleSubmit({
                         description: description,
                         googlePlaceId: place_id,
-                        readyToSearch: true,
+                        isReadyToSearch: true,
                       })
                     }
                     key={place_id}
@@ -78,7 +78,7 @@ export default function Start({ handleSubmit }) {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           locationName: 'Mein Standort',
-          readyToSearch: true,
+          isReadyToSearch: true,
         })
       },
       function (error) {
@@ -142,7 +142,7 @@ const SearchField = styled.div`
   padding: 10px;
   border-radius: 20px;
   background-color: ${(props) => (props.active ? '#fff' : '#ffffff75')};
-  box-shadow: 0px 0px 25px 0px var(--primary-brown);
+  box-shadow: 0px 0px 25px 0px var(--secondary-color);
   transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out,
     font-size 0.5s ease-in-out, transform 0.5s ease-in-out;
   font-size: ${(props) => (props.active ? '1.2em' : '0.8em')};
@@ -181,12 +181,12 @@ const SearchSuggestions = styled.div`
 
   button {
     width: 100%;
-    background: var(--primary-green);
+    background: var(--primary-gradient);
     border: none;
     border-radius: 5px;
     font-size: 1em;
-    color: white;
-    padding: 5px;
+    color: var(--text-invert-color);
+    padding: 10px 5px;
   }
 
   ul {
