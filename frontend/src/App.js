@@ -2,11 +2,18 @@ import { useState, useEffect } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import Start from './components/Start'
+import getFromApi from './services/getFromApi'
 
 export default function App() {
   const [tracks, setTracks] = useState([])
 
-  useEffect(() => getTracks(), [])
+   useEffect(
+    () =>
+      getFromApi('track')
+        .then((data) => setTracks(data))
+        .catch((error) => console.error('Error:', error)),
+    []
+  )
 
   const [startingPoint, setStartingPoint] = useState({
     latitude: null,
@@ -15,15 +22,6 @@ export default function App() {
     googlePlaceId: '',
     isReadyToSearch: false,
   })
-
-  useEffect(() => console.log(startingPoint))
-
-  function getTracks() {
-    fetch('http://wandergold.local/track')
-      .then((res) => res.json())
-      .then((data) => setTracks(data))
-      .catch((error) => console.error('Error:', error))
-  }
 
   return (
     <PageLayout>
