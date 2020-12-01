@@ -15,7 +15,9 @@ class AutocompleteController extends AbstractController
      */
     public function index(string $place, HttpClientInterface $client): JsonResponse
     {
-
+        $apiKey = $this->getParameter("app.google_api_key");
+        var_dump($apiKey);
+        die;
         if (!$place) {
             return new JsonResponse(
                 ['success' => 'no'],
