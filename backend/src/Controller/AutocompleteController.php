@@ -16,8 +16,7 @@ class AutocompleteController extends AbstractController
     public function index(string $place, HttpClientInterface $client): JsonResponse
     {
         $apiKey = $this->getParameter("app.google_api_key");
-        var_dump($apiKey);
-        die;
+
         if (!$place) {
             return new JsonResponse(
                 ['success' => 'no'],
@@ -30,7 +29,7 @@ class AutocompleteController extends AbstractController
 
         $response = $this->client->request(
             'GET',
-            "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$place&key=APIKEY&language=de"
+            "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$place&key=$apiKey&language=de"
         );
 
         $statusCode = $response->getStatusCode();
