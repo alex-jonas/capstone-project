@@ -92,6 +92,11 @@ class Track
      */
     private $first_lon;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $elevation;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -273,6 +278,18 @@ class Track
     public function setFirstLon(float $first_lon): self
     {
         $this->first_lon = $first_lon;
+
+        return $this;
+    }
+
+    public function getElevation(): ?int
+    {
+        return $this->elevation;
+    }
+
+    public function setElevation(?int $elevation): self
+    {
+        $this->elevation = $elevation;
 
         return $this;
     }
