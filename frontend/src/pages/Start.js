@@ -5,6 +5,7 @@ import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
+import getFromApi from '../services/getFromApi'
 
 Start.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -32,7 +33,7 @@ export default function Start({ handleSubmit }) {
             onChange={(event) => getSuggestions(event.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             type="text"
-            placeholder={!isSearchFocused && 'wo willst du hin?'}
+            placeholder={isSearchFocused ? 'wo willst du hin?' : ''}
           />
         </SearchField>
         {isSearchFocused && (
@@ -90,9 +91,9 @@ export default function Start({ handleSubmit }) {
   function getSuggestions(placeString) {
     const place = placeString.trim()
     if (place.length > 3) {
-      const url = `http://wandergold.local/autocomplete/${place}`
-      fetch(url)
-        .then((res) => res.json())
+      const path = `autocomplete/${place}`
+      getFromApi(path)
+        .then((response) => response.data)
         .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
         .catch((error) => console.error('Error:', error))
     } else {
