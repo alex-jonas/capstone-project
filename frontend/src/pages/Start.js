@@ -49,16 +49,12 @@ export default function Start({ handleSubmit }) {
                   </li>
                 )}
 
-                {suggestionList.map(({ description, place_id }) => (
+                {suggestionList.map(({ description, googlePlaceId }) => (
                   <li
                     onClick={() =>
-                      handleSubmit({
-                        description: description,
-                        googlePlaceId: place_id,
-                        isReadyToSearch: true,
-                      })
+                      getCoordsAndSearch(description, googlePlaceId)
                     }
-                    key={place_id}
+                    key={googlePlaceId}
                   >
                     {description}
                   </li>
@@ -72,9 +68,25 @@ export default function Start({ handleSubmit }) {
     </Wrapper>
   )
 
+  function getCoordsAndSearch(description, googlePlaceId) {
+    const path = `geocode/${googlePlaceId}`
+    getFromApi(path)
+      .then((response) => response.data.results[0].geometry)
+      .then((geometry) => {
+        const searchObject = {
+          locationName: description,
+          googlePlaceId: googlePlaceId,
+          latitude: geometry.location.lat,
+          longitude: geometry.location.lng,
+          isReadyToSearch: true,
+        }
+        handleSubmit(searchObject)
+      })
+  }
+
   function getGeolocationOfUser() {
     navigator.geolocation.getCurrentPosition(
-      function (position) {
+      (position) => {
         handleSubmit({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
@@ -82,7 +94,7 @@ export default function Start({ handleSubmit }) {
           isReadyToSearch: true,
         })
       },
-      function (error) {
+      (error) => {
         console.error(error)
       }
     )
@@ -93,8 +105,14 @@ export default function Start({ handleSubmit }) {
     if (place.length > 3) {
       const path = `autocomplete/${place}`
       getFromApi(path)
-        .then((response) => response.data)
-        .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
+        .then((response) => response.data.predictions)
+        .then((suggestions) =>
+          suggestions.map(({ description, place_id }) => ({
+            description: description,
+            googlePlaceId: place_id,
+          }))
+        )
+        .then((suggestions) => setSuggestionList(suggestions.slice(0, 4)))
         .catch((error) => console.error('Error:', error))
     } else {
       setSuggestionList([])

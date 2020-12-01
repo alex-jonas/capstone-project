@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript, Polyline } from '@react-google-maps/api'
+import { GoogleMap, LoadScript } from '@react-google-maps/api'
 
 export default function Map({ centerCoords }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
@@ -14,11 +14,12 @@ export default function Map({ centerCoords }) {
     strokeWeight: 2,
     fillColor: '#FF0000',
     fillOpacity: 0.35,
-    clickable: false,
-    draggable: false,
+    clickable: true,
+    draggable: true,
     editable: true,
     visible: true,
     radius: 30000,
+    streetViewControl: false,
     paths: [
       { lat: 37.772, lng: -122.214 },
       { lat: 21.291, lng: -157.821 },
@@ -38,8 +39,7 @@ export default function Map({ centerCoords }) {
         options={options}
         disableDefaultUI
       >
-        {/* Child components, such as markers, info windows, etc.
-         */}
+        {/*<KmlLayer url="http://alexjonas.de/capstone/3_Auf_der_Klosterrunde_von_Heimbach_final.kml" />*/}
       </GoogleMap>
     </LoadScript>
   )
