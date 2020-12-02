@@ -14,24 +14,25 @@ export default function Results({ startingPoint }) {
     lat: startingPoint.latitude,
     lng: startingPoint.longitude,
   })
-  useEffect(
-    () =>
-      getFromApi('track')
-        .then(({ data }) => setTracks(data))
-        .catch((error) => console.error('Error:', error)),
-    []
-  )
+
+  useEffect(() => {
+    const path = `track/${centerCoords.lat},${centerCoords.lng}`
+    getFromApi(path)
+      .then(({ data }) => setTracks(data))
+      .catch((error) => console.error('Error:', error))
+  }, [])
 
   return (
     <Wrapper>
       <h1>Wandergold</h1>
       <Map centerCoords={centerCoords} />
-      {tracks.map(({ id, description, title }, index) => (
+      {tracks.map(({ id, description, title, distance }, index) => (
         <Track key={id}>
           <h2>
             {index + 1} {title}
           </h2>
           <p>{description}</p>
+          <p>{Math.round(distance / 1000)} km</p>
         </Track>
       ))}
     </Wrapper>

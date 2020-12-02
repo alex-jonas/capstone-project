@@ -97,6 +97,8 @@ class Track
      */
     private $elevation;
 
+    public $distance;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -292,5 +294,10 @@ class Track
         $this->elevation = $elevation;
 
         return $this;
+    }
+
+    public function getDistance(): ?float
+    {
+        return $this->distance;
     }
 }

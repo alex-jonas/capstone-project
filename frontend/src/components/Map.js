@@ -1,4 +1,4 @@
-import { GoogleMap, LoadScript } from '@react-google-maps/api'
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
 
 export default function Map({ centerCoords }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
@@ -40,6 +40,8 @@ export default function Map({ centerCoords }) {
         disableDefaultUI
       >
         {/*<KmlLayer url="http://alexjonas.de/capstone/3_Auf_der_Klosterrunde_von_Heimbach_final.kml" />*/}
+
+        <Marker position={centerCoords} />
       </GoogleMap>
     </LoadScript>
   )

@@ -22,7 +22,7 @@ export default function Start({ handleSubmit }) {
           <img src={wandergoldSrc} alt="wandergold" />
         </h1>
       </LogoArea>
-      <LocationSearch>
+      <LocationSearch onSubmit={(event) => event.preventDefault()}>
         <SearchField active={isSearchFocused}>
           {isSearchFocused && (
             <button type="button" onClick={() => setIsSearchFocused(false)}>
