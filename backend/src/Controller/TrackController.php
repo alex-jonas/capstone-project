@@ -66,9 +66,7 @@ class TrackController extends AbstractController
             );
         }
 
-        $coordPairSlices = explode(",", $coordPair);
-        $latOrigin = floatval($coordPairSlices[0]);
-        $lngOrigin = floatval($coordPairSlices[1]);
+        [$latOrigin, $lngOrigin] = array_map('floatval', explode(",", $coordPair));
 
         $tracks =  $this->getDoctrine()->getRepository(Track::class)->findAll();
 

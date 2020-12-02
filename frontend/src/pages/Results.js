@@ -20,12 +20,12 @@ export default function Results({ startingPoint }) {
     getFromApi(path)
       .then(({ data }) => setTracks(data))
       .catch((error) => console.error('Error:', error))
-  }, [])
+  }, [centerCoords])
 
   return (
     <Wrapper>
       <h1>Wandergold</h1>
-      <Map centerCoords={centerCoords} />
+      <Map centerCoords={centerCoords} handleCenterChanged={setCenterCoords} />
       {tracks.map(({ id, description, title, distance }, index) => (
         <Track key={id}>
           <h2>
