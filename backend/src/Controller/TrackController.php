@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Track;
 use App\Repository\TrackRepository;
 use App\Services\GeoDistance;
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,21 +69,18 @@ class TrackController extends AbstractController
 
         $tracks =  $this->getDoctrine()->getRepository(Track::class)->findAll();
 
-        $tracksWithDistance = [];
         foreach ($tracks as $track) {
 
             $latDestination = $track->getFirstLat();
             $lngDestination = $track->getFirstLon();
-
-            $track->distance = $geodistance->getDistanceMeters($latOrigin, $lngOrigin, $latDestination, $lngDestination);
-
-            $tracksWithDistance[] = $track;
+            $calculatedDistance = $geodistance->getDistanceMeters($latOrigin, $lngOrigin, $latDestination, $lngDestination);
+            $track->setDistance($calculatedDistance);
         }
 
-        usort($tracksWithDistance, fn ($a, $b) => ($a->distance < $b->distance) ? -1 : 1);
+        usort($tracks, fn ($a, $b) => ($a->distance < $b->distance) ? -1 : 1);
 
         return new JsonResponse(
-            $serializer->serialize($tracksWithDistance, 'json'),
+            $serializer->serialize($tracks, 'json'),
             JsonResponse::HTTP_OK,
             [],
             true

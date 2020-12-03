@@ -9,13 +9,18 @@ Results.propTypes = {
 }
 
 export default function Results({ startingPoint }) {
+  const lastSearchedPosition = JSON.parse(
+    localStorage.getItem('lastSearchedPosition')
+  )
+
   const [tracks, setTracks] = useState([])
   const [centerCoords, setCenterCoords] = useState({
-    lat: startingPoint.latitude,
-    lng: startingPoint.longitude,
+    lat: startingPoint.latitude || lastSearchedPosition.lat,
+    lng: startingPoint.longitude || lastSearchedPosition.lng,
   })
 
   useEffect(() => {
+    localStorage.setItem('lastSearchedPosition', JSON.stringify(centerCoords))
     const path = `track/${centerCoords.lat},${centerCoords.lng}`
     getFromApi(path)
       .then(({ data }) => setTracks(data))
