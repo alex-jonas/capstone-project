@@ -3,6 +3,7 @@ import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSrc from './../assets/wandergold.svg'
 import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
+import loadSrc from './../assets/load.svg'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import getFromApi from '../services/getFromApi'
@@ -30,7 +31,10 @@ export default function Start({ handleSubmit }) {
             </button>
           )}
           <input
-            onChange={(event) => getSuggestions(event.target.value)}
+            onChange={(event) => {
+              !suggestionList.length && setSuggestionList([{ loading: true }])
+              getSuggestions(event.target.value)
+            }}
             onFocus={() => setIsSearchFocused(true)}
             type="text"
             placeholder={isSearchFocused ? 'wo willst du hin?' : ''}
@@ -49,16 +53,25 @@ export default function Start({ handleSubmit }) {
                   </li>
                 )}
 
-                {suggestionList.map(({ description, googlePlaceId }) => (
-                  <li
-                    onClick={() =>
-                      getCoordsAndSearch(description, googlePlaceId)
-                    }
-                    key={googlePlaceId}
-                  >
-                    {description}
-                  </li>
-                ))}
+                {suggestionList.map(
+                  ({ loading, description, googlePlaceId }) => (
+                    <>
+                      {loading && (
+                        <li key="loading">
+                          <img src={loadSrc} alt="Loading" />
+                        </li>
+                      )}
+                      <li
+                        onClick={() =>
+                          getCoordsAndSearch(description, googlePlaceId)
+                        }
+                        key={googlePlaceId}
+                      >
+                        {description}
+                      </li>
+                    </>
+                  )
+                )}
               </>
             </ul>
             <button>Tour finden</button>
@@ -102,7 +115,7 @@ export default function Start({ handleSubmit }) {
 
   function getSuggestions(placeString) {
     const place = placeString.trim()
-    if (place.length > 3) {
+    if (place.length > 2) {
       const path = `autocomplete/${place}`
       getFromApi(path)
         .then((response) => response.data.predictions)
@@ -113,7 +126,11 @@ export default function Start({ handleSubmit }) {
           }))
         )
         .then((suggestions) => setSuggestionList(suggestions.slice(0, 4)))
-        .catch((error) => console.error('Error:', error))
+        .catch(() =>
+          setSuggestionList([
+            { description: 'Service nicht verfügbar', googlePlaceId: 'error' },
+          ])
+        )
     } else {
       setSuggestionList([])
     }
@@ -122,15 +139,16 @@ export default function Start({ handleSubmit }) {
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-rows: 60% 40%;
   background-image: url(${startscreenJpg});
-  background-size: auto 100vh;
-  background-position-x: center;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   padding: 5%;
   padding-top: 0;
+  position: relative;
 `
 
 const LogoArea = styled.div`

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
+import Header from './components/Header'
 import Results from './pages/Results'
 import Start from './pages/Start'
 
@@ -23,8 +24,12 @@ export default function App() {
             <Start handleSubmit={setStartingPoint} />
           )}
         </Route>
+
         <Route path="/results">
-          <Results startingPoint={startingPoint} />
+          <>
+            <Header />
+            <Results startingPoint={startingPoint} />
+          </>
         </Route>
 
         <Route exact path="/signup">
@@ -42,4 +47,6 @@ const PageLayout = styled.div`
   min-width: 250px;
   margin: 0 auto;
   box-shadow: 0px 0px 25px 0px #000;
+  background: #fff;
+  position: relative;
 `

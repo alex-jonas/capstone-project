@@ -10,7 +10,7 @@ export default function Map({ centerCoords, handleCenterChanged }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
   const containerStyle = {
     width: '100%',
-    height: '40vh',
+    height: '50vh',
   }
 
   const options = {
@@ -25,6 +25,9 @@ export default function Map({ centerCoords, handleCenterChanged }) {
     visible: true,
     radius: 30000,
     streetViewControl: false,
+    fullscreenControl: false,
+    mapTypeControl: false,
+
     paths: [
       { lat: 37.772, lng: -122.214 },
       { lat: 21.291, lng: -157.821 },
