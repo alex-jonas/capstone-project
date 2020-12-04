@@ -3,10 +3,11 @@ import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSrc from './../assets/wandergold.svg'
 import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
-import loadSrc from './../assets/load.svg'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 import getFromApi from '../services/getFromApi'
+import getGeolocationOfUser from '../services/getGeolocationOfUser'
+import Loader from '../components/Loader'
 
 Start.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -47,7 +48,12 @@ export default function Start({ handleSubmit }) {
                 {navigator.geolocation && (
                   <li
                     className="geoLocator"
-                    onClick={() => getGeolocationOfUser()}
+                    onClick={() => {
+                      getGeolocationOfUser(handleSubmit, {
+                        locationName: 'Mein Standort',
+                        isReadyToSearch: true,
+                      })
+                    }}
                   >
                     Mein Standort
                   </li>
@@ -58,7 +64,7 @@ export default function Start({ handleSubmit }) {
                     <>
                       {loading && (
                         <li key="loading">
-                          <img src={loadSrc} alt="Loading" />
+                          <Loader />
                         </li>
                       )}
                       <li
@@ -74,44 +80,11 @@ export default function Start({ handleSubmit }) {
                 )}
               </>
             </ul>
-            <button>Tour finden</button>
           </SearchSuggestions>
         )}
       </LocationSearch>
     </Wrapper>
   )
-
-  function getCoordsAndSearch(description, googlePlaceId) {
-    const path = `geocode/${googlePlaceId}`
-    getFromApi(path)
-      .then((response) => response.data.results[0].geometry)
-      .then((geometry) => {
-        const searchObject = {
-          locationName: description,
-          googlePlaceId: googlePlaceId,
-          latitude: geometry.location.lat,
-          longitude: geometry.location.lng,
-          isReadyToSearch: true,
-        }
-        handleSubmit(searchObject)
-      })
-  }
-
-  function getGeolocationOfUser() {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        handleSubmit({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          locationName: 'Mein Standort',
-          isReadyToSearch: true,
-        })
-      },
-      (error) => {
-        console.error(error)
-      }
-    )
-  }
 
   function getSuggestions(placeString) {
     const place = placeString.trim()
@@ -134,6 +107,22 @@ export default function Start({ handleSubmit }) {
     } else {
       setSuggestionList([])
     }
+  }
+
+  function getCoordsAndSearch(description, googlePlaceId) {
+    const path = `geocode/${googlePlaceId}`
+    getFromApi(path)
+      .then((response) => response.data.results[0].geometry)
+      .then((geometry) => {
+        const searchObject = {
+          locationName: description,
+          googlePlaceId: googlePlaceId,
+          latitude: geometry.location.lat,
+          longitude: geometry.location.lng,
+          isReadyToSearch: true,
+        }
+        handleSubmit(searchObject)
+      })
   }
 }
 

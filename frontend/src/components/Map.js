@@ -1,10 +1,5 @@
-import {
-  useLoadScript,
-  GoogleMap,
-  LoadScript,
-  Marker,
-} from '@react-google-maps/api'
-import { useState, useRef } from 'react'
+import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api'
+import { useRef } from 'react'
 
 export default function Map({ centerCoords, handleCenterChanged }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
