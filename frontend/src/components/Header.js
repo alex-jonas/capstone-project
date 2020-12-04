@@ -12,16 +12,21 @@ export default function Header() {
 }
 
 const Wrapper = styled.header`
-  display: grid;
-  place-content: center;
-  position: relative;
+  width: 100%;
+  height: 46px;
+  position: absolute;
+  top: 0;
+  left: 0;
   box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
   background: #fff;
-  z-index: 100;
+  z-index: 500;
+  display: grid;
+  place-items: center;
 
   h1 {
     line-height: 1;
-    margin: 5px;
+    margin: 0;
+    margin-top: 9px;
   }
 
   img {

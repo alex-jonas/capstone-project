@@ -22,7 +22,7 @@ export default function Map({ centerCoords, handleCenterChanged }) {
     streetViewControl: false,
     fullscreenControl: false,
     mapTypeControl: false,
-
+    mapTypeId: 'terrain',
     paths: [
       { lat: 37.772, lng: -122.214 },
       { lat: 21.291, lng: -157.821 },
@@ -43,11 +43,9 @@ export default function Map({ centerCoords, handleCenterChanged }) {
       mapContainerStyle={containerStyle}
       center={centerCoords}
       zoom={10}
-      mapTypeId="terrain"
       options={options}
       onDragEnd={() => {
         const { lat, lng } = mapRef.current.getCenter().toJSON()
-        console.log(lat, lng)
         handleCenterChanged({ lat: +lat, lng: +lng })
       }}
       disableDefaultUI

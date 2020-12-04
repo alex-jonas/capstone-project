@@ -4,6 +4,7 @@ import getFromApi from '../services/getFromApi'
 import PropTypes from 'prop-types'
 import Map from '../components/Map'
 import filterSrc from '../assets/filter.svg'
+import controlsSrc from '../assets/controls.svg'
 
 Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
@@ -13,6 +14,8 @@ export default function Results({ startingPoint }) {
   const lastSearchedPosition = JSON.parse(
     localStorage.getItem('lastSearchedPosition')
   )
+
+  const [filterCriteria, setFilterCriteria] = useState({ distance: 300 })
 
   const [tracks, setTracks] = useState([])
   const [centerCoords, setCenterCoords] = useState({
@@ -28,35 +31,51 @@ export default function Results({ startingPoint }) {
       .catch((error) => console.error('Error:', error))
   }, [centerCoords])
 
+  console.log(tracks)
+  const filteredTracks = tracks.filter((track) => {
+    for (const key in filterCriteria)
+      return track[key] === undefined || track[key] > filterCriteria[key] * 1000
+        ? false
+        : true
+  })
   return (
     <Wrapper>
       <Map centerCoords={centerCoords} handleCenterChanged={setCenterCoords} />
+      <FilterBar>
+        <FilterButton>
+          <img src={controlsSrc} alt="" />
+        </FilterButton>
+        <div>
+          <span>lorem</span>
+          <span>Lorem ipsum dolor sit amet.</span>
+          <span>Lorem, ipsum dolor.</span>
+        </div>
+      </FilterBar>
 
       <ResultGrid>
-        <FilterBar>
-          <h2>Filter</h2>
-        </FilterBar>
-        {tracks.map(({ id, description, title, distance, lengthM }, index) => (
-          <TrackCard key={id}>
-            <ImageHeading
-              imgUrl={'https://source.unsplash.com/500x300/?forest,lake'}
-            >
-              <h2>{title}</h2>
-            </ImageHeading>
-            <div>
-              <p></p>
-              <p>{description}</p>
-              <ul>
-                <li>
-                  <strong>Entfernung</strong> {Math.round(distance / 1000)} km
-                </li>
-                <li>
-                  <strong>Länge</strong> {Math.round(lengthM / 100) / 10} km
-                </li>
-              </ul>
-            </div>
-          </TrackCard>
-        ))}
+        {filteredTracks.map(
+          ({ id, description, title, distance, lengthM }, index) => (
+            <TrackCard key={id}>
+              <ImageHeading
+                imgUrl={'https://source.unsplash.com/500x300/?forest,lake'}
+              >
+                <h2>{title}</h2>
+              </ImageHeading>
+              <div>
+                <p></p>
+                <p>{description}</p>
+                <ul>
+                  <li>
+                    <strong>Entfernung</strong> {Math.round(distance / 1000)} km
+                  </li>
+                  <li>
+                    <strong>Länge</strong> {Math.round(lengthM / 100) / 10} km
+                  </li>
+                </ul>
+              </div>
+            </TrackCard>
+          )
+        )}
       </ResultGrid>
     </Wrapper>
   )
@@ -67,29 +86,46 @@ const Wrapper = styled.main`
   height: 100vh;
   overflow: scroll;
   position: relative;
+  padding-top: 46px;
 `
 
 const FilterBar = styled.section`
-  background: var(--primary-color);
+  background: #fff;
   box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
-  color: #eee;
   text-align: center;
-  padding: 5px;
-  z-index: 50px;
+  padding: 0;
   position: sticky;
   top: 0;
   margin-top: -30px;
   font-size: 0.8em;
 
-  h2 {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+
+  div {
+    white-space: nowrap;
+    overflow-x: scroll;
+    padding-top: 12px;
+  }
+  span {
+    background: #00000020;
+    border-radius: var(--default-border-radius);
+    padding: 0 5px;
+    margin: 0 5px;
     display: inline;
-    background-image: url(${filterSrc});
-    background-size: 14px;
-    background-repeat: no-repeat;
-    background-position: left center;
-    padding-left: 19px;
-    line-height: 1;
-    font-size: 1em;
+  }
+`
+
+const FilterButton = styled.button`
+  width: 100%;
+  height: 40px;
+  background-color: var(--primary-color);
+  border: 0;
+  box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.65);
+
+  img {
+    width: 40%;
+    height: 16px;
   }
 `
 
