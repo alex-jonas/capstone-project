@@ -30,6 +30,7 @@ export default function Map({ centerCoords, handleCenterChanged }) {
       { lat: -27.467, lng: 153.027 },
     ],
     zIndex: 1,
+    mapId: '8f3b901a261ead83',
   }
   const mapRef = useRef()
   const { isLoaded } = useLoadScript({

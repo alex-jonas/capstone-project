@@ -19,7 +19,7 @@ const Wrapper = styled.header`
   left: 0;
   box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
   background: #fff;
-  z-index: 500;
+  z-index: 50;
   display: grid;
   place-items: center;
 

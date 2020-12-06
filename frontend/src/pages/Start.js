@@ -1,9 +1,9 @@
+import { useState } from 'react'
 import styled from 'styled-components/macro'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSrc from './../assets/wandergold.svg'
 import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
-import { useState } from 'react'
 import PropTypes from 'prop-types'
 import getFromApi from '../services/getFromApi'
 import getGeolocationOfUser from '../services/getGeolocationOfUser'
@@ -38,7 +38,7 @@ export default function Start({ handleSubmit }) {
             }}
             onFocus={() => setIsSearchFocused(true)}
             type="text"
-            placeholder={isSearchFocused ? 'wo willst du hin?' : ''}
+            placeholder={!isSearchFocused ? 'wo willst du hin?' : ''}
           />
         </SearchField>
         {isSearchFocused && (
