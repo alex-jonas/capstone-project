@@ -32,8 +32,10 @@ export default function App() {
           </>
         </Route>
 
-        <Route exact path="/signup">
-          <div>Register</div>
+        <Route exact path="/filter">
+          <>
+            <div>Register</div>
+          </>
         </Route>
       </Switch>
     </PageLayout>

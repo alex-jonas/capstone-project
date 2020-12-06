@@ -5,6 +5,5 @@ export default function getHoursFromMinutes(minutes) {
   const minutesInteger = Math.round(minutesDecimal * 60)
   const minutesIntWithLeadingZero =
     (minutesInteger < 10 && '0') + minutesInteger
-
-  return hoursInteger + ':' + minutesIntWithLeadingZero
+  return hoursInteger + (minutesInteger && ':' + minutesIntWithLeadingZero)
 }

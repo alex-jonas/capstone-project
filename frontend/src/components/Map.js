@@ -1,7 +1,7 @@
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api'
 import { useRef } from 'react'
 
-export default function Map({ centerCoords, handleCenterChanged }) {
+export default function Map({ centerCoords, handleCenterChanged, tracks }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
   const containerStyle = {
     width: '100%',
@@ -30,7 +30,6 @@ export default function Map({ centerCoords, handleCenterChanged }) {
       { lat: -27.467, lng: 153.027 },
     ],
     zIndex: 1,
-    mapId: '8f3b901a261ead83',
   }
   const mapRef = useRef()
   const { isLoaded } = useLoadScript({
@@ -51,8 +50,10 @@ export default function Map({ centerCoords, handleCenterChanged }) {
       }}
       disableDefaultUI
     >
-      {/*<KmlLayer url="http://alexjonas.de/capstone/3_Auf_der_Klosterrunde_von_Heimbach_final.kml" />*/}
       <Marker position={centerCoords} />
+      {tracks.map(({ firstLat, firstLon }, index) => (
+        <Marker key={index} position={{ lat: +firstLat, lng: +firstLon }} />
+      ))}
     </GoogleMap>
   )
 

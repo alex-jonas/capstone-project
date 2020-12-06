@@ -11,6 +11,8 @@ import starSrc from '../assets/star.svg'
 import filterNewSrc from '../assets/filter_new.svg'
 import getDifficultyName from '../services/getDifficultyName'
 import getHoursFromMinutes from '../services/getHoursFromMinutes'
+import getTagName from '../services/getTagName'
+import FilterMenu from '../components/FilterMenu'
 
 Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
@@ -32,6 +34,7 @@ export default function Results({ startingPoint }) {
     lat: startingPoint.latitude || lastSearchedPosition.lat,
     lng: startingPoint.longitude || lastSearchedPosition.lng,
   })
+  const [isFilterActicve, setIsFilterActive] = useState(false)
 
   useEffect(() => {
     localStorage.setItem('lastSearchedPosition', JSON.stringify(centerCoords))
@@ -60,21 +63,42 @@ export default function Results({ startingPoint }) {
 
   return (
     <Wrapper>
-      <Map centerCoords={centerCoords} handleCenterChanged={setCenterCoords} />
+      <Map
+        centerCoords={centerCoords}
+        handleCenterChanged={setCenterCoords}
+        tracks={filteredTracks}
+      />
       <FilterBar>
-        <FilterButton>
+        <FilterButton onClick={() => setIsFilterActive(true)}>
           <strong>Filter</strong>{' '}
           {Object.keys(filterCriteria).length > 0 && (
             <span>{Object.keys(filterCriteria).length}</span>
           )}
         </FilterButton>
-        <div></div>
       </FilterBar>
+
+      {isFilterActicve && (
+        <FilterMenu
+          handleClick={setFilterCriteria}
+          filterCriteria={filterCriteria}
+          setIsFilterActive={setIsFilterActive}
+        />
+      )}
 
       <ResultGrid>
         {filteredTracks.map(
           (
-            { id, difficulty, title, distance, lengthM, certYear, durationMin },
+            {
+              id,
+              difficulty,
+              title,
+              distance,
+              lengthM,
+              certYear,
+              durationMin,
+              description,
+              tags,
+            },
             index
           ) => (
             <TrackCard key={id}>
@@ -107,7 +131,7 @@ export default function Results({ startingPoint }) {
                     {Math.round(distance / 1000) + ' km'}
                   </li>
                   <li>
-                    <strong>Schwierigkeit: </strong>
+                    <strong>Anspruch: </strong>
                     {getDifficultyName(difficulty)}
                   </li>
                   {certYear && (
@@ -115,6 +139,15 @@ export default function Results({ startingPoint }) {
                       <img src={premiumSrc} alt="Premiumweg" />
                     </li>
                   )}
+                  <li className="one-column">
+                    <strong>Tour Tags: </strong>
+                    {tags
+                      .sort(() => Math.random() - 0.5)
+                      .map((tag) => (
+                        <span>{getTagName(tag)}</span>
+                      ))}
+                  </li>
+                  <li className="one-column">{description}</li>
                 </ul>
               </TrackFacts>
             </TrackCard>
@@ -142,7 +175,7 @@ const FilterBar = styled.section`
   top: 0;
   margin-top: -30px;
   font-size: 0.8em;
-
+  z-index: 100;
   display: grid;
   grid-template-columns: 1fr 2fr;
 
@@ -210,6 +243,8 @@ const ImageHeading = styled.section`
   place-items: center;
   padding: 10%;
   position: relative;
+  z-index: 50;
+  border-radius: var(--default-border-radius);
 
   h2 {
     font-family: 'Kanit', sans-serif;
@@ -236,15 +271,35 @@ const TrackFacts = styled.section`
     padding: 0;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    position: relative;
     li {
-      padding: 5px 0;
+      padding: 8px 0;
       border-bottom: 1px solid #eee;
     }
 
     li.premium {
       position: absolute;
       top: 0;
-      left: 0;
+      right: 0;
+      border: none;
+      width: 40px;
+      img {
+        width: 100%;
+      }
+    }
+
+    li.one-column {
+      grid-column: 1 / -1;
+    }
+
+    span {
+      font-size: 0.9em;
+      margin-right: 4px;
+      margin-bottom: 4px;
+      background-color: #3e382b20;
+      border-radius: var(--default-border-radius);
+      padding: 2px 4px;
+      display: inline-block;
     }
   }
 `
