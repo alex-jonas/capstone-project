@@ -23,6 +23,7 @@ export default function Map({ centerCoords, handleCenterChanged, tracks }) {
     fullscreenControl: false,
     mapTypeControl: false,
     mapTypeId: 'terrain',
+
     paths: [
       { lat: 37.772, lng: -122.214 },
       { lat: 21.291, lng: -157.821 },

@@ -1,10 +1,15 @@
+import { getQueriesForElement } from '@testing-library/react'
+import { resetWarningCache } from 'prop-types'
 import styled from 'styled-components/macro'
+import closeSrc from '../assets/close.svg'
 
 export default function FilterMenu({
   setFilterCriteria,
   filterCriteria,
   setIsFilterActive,
   allTracks,
+  isFilterActive,
+  tracksNumber,
 }) {
   const maxDistance = 600000
   const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))
@@ -41,15 +46,17 @@ export default function FilterMenu({
   function handleCheckboxChange(event) {
     const property = event.target.name
     const value = event.target.checked
-    const obj = { ...filterCriteria, [property]: value }
-    !value && delete obj[property]
-    setFilterCriteria(obj)
+    const newFilterCriteria = { ...filterCriteria, [property]: value }
+    !value && delete newFilterCriteria[property]
+    setFilterCriteria(newFilterCriteria)
   }
 
-  console.log(filterCriteria)
   return (
-    <Wrapper>
+    <Wrapper active={isFilterActive}>
       <h2>Finde deine perfekte Tour</h2>
+      <CloseButton type="button" onClick={() => setIsFilterActive(false)}>
+        <img src={closeSrc} alt="Schließen" />
+      </CloseButton>
       <Controls>
         <label>
           <span>Umkreis: {distanceKmPresetValue} km</span>
@@ -96,27 +103,41 @@ export default function FilterMenu({
             onChange={handleCheckboxChange}
           />
         </label>
-
-        <button onClick={() => setIsFilterActive(false)}>Schließen</button>
+        <p>Ergebnisse: {tracksNumber}</p>
+        <button
+          type="reset"
+          onClick={(event) => {
+            setFilterCriteria({})
+            setIsFilterActive(false)
+          }}
+        >
+          Filter zurücksetzen
+        </button>
       </Controls>
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
-  background-color: var(--primary-color);
+  background: linear-gradient(
+    180deg,
+    rgba(66, 99, 26, 1) 0%,
+    rgba(62, 97, 19, 1) 100%
+  );
   height: 100vh;
-  width: 50%;
-  position: absolute;
+  width: 100%;
   top: 0;
-  left: 0;
+  right: ${(props) => (props.active ? '0' : '100%')};
   z-index: 300;
-  padding: 5%;
+  position: absolute;
+  padding: 12%;
   font-size: 1em;
-  color: #eee;
+  color: #eeeeee;
+  transition: right 0.2s ease-out;
 
   h2 {
     font-family: 'Kanit', sans-serif;
+    font-weight: 400;
     line-height: 1;
     font-size: 1.7em;
   }
@@ -131,13 +152,11 @@ const Controls = styled.form`
   input {
     width: 100%;
   }
-
-  button {
-    width: 100%;
-    font-size: 1em;
-    background: var(--secondary-color);
-    color: #fff;
-    border: none;
-    padding: 10px;
-  }
+`
+const CloseButton = styled.button`
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border: none;
+  background: none;
 `

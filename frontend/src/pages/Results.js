@@ -80,20 +80,22 @@ export default function Results({ startingPoint }) {
         </div>
       </FilterBar>
 
-      {isFilterActive && (
-        <FilterMenu
-          filterCriteria={filterCriteria}
-          setFilterCriteria={setFilterCriteria}
-          setIsFilterActive={setIsFilterActive}
-          allTracks={tracks}
-        />
-      )}
+      <FilterMenu
+        filterCriteria={filterCriteria}
+        setFilterCriteria={setFilterCriteria}
+        setIsFilterActive={setIsFilterActive}
+        allTracks={tracks}
+        isFilterActive={isFilterActive}
+        tracksNumber={filteredTracks.length}
+      />
 
-      <ResultGrid>
-        {filteredTracks.map((track) => (
-          <TrackCard track={track} key={track.id} />
-        ))}
-      </ResultGrid>
+      {!isFilterActive && (
+        <ResultGrid>
+          {filteredTracks.map((track) => (
+            <TrackCard track={track} key={track.id} />
+          ))}
+        </ResultGrid>
+      )}
       <Footer />
     </Wrapper>
   )

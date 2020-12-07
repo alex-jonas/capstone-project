@@ -98,8 +98,11 @@ const BookmarkButton = styled.button`
 
 const ImageHeading = styled.section`
   display: grid;
-  background: url(${(props) => props.imgUrl});
+  background: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80');
+  xbackground: url(${(props) => props.imgUrl});
+  background-attachment: fixed;
   background-size: cover;
+  background-position: center;
   place-items: center;
   padding: 10%;
   position: relative;
