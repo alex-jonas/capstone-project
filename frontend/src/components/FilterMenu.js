@@ -12,24 +12,41 @@ export default function FilterMenu({
     ...allTracks.map((track) => track.durationMin)
   )
 
-  const { distance, lengthM } = filterCriteria
+  const { distance, lengthM, roundtrip, certYear } = filterCriteria
 
   const distanceStep = 10
   const distanceKm = distance / 1000
+  const distanceKmCeil = Math.ceil(distanceKm / distanceStep) * distanceStep
   const distanceKmPresetValue =
-    Math.ceil(distanceKm / distanceStep) * distanceStep
+    distance > 0 ? distanceKmCeil : maxDistance / 1000
 
-  /* const lengthStep = 1
-  const lengthKm = presetLengthM?.max / 1000
-  const lengthNextHigherStep = Math.ceil(lengthKm / lengthStep) * lengthStep*/
+  const lengthStep = 1
+  const lengthKm = lengthM / 1000
+  const lengthKmCeil = Math.ceil(lengthKm / lengthStep) * lengthStep
+  const lengthKmPresetValue = lengthM > 0 ? lengthKmCeil : maxLengthM / 1000
+
+  const roundtripPresetValue = roundtrip ? roundtrip : false
+  const certYearPresetValue = certYear ? certYear : false
 
   function handleConfigChange(event) {
+    const property = event.target.name
+    const value =
+      property === 'roundtrip' ? event.target.checked : +event.target.value
     setFilterCriteria({
       ...filterCriteria,
-      [event.target.name]: +event.target.value,
+      [property]: value,
     })
   }
 
+  function handleCheckboxChange(event) {
+    const property = event.target.name
+    const value = event.target.checked
+    const obj = { ...filterCriteria, [property]: value }
+    !value && delete obj[property]
+    setFilterCriteria(obj)
+  }
+
+  console.log(filterCriteria)
   return (
     <Wrapper>
       <h2>Finde deine perfekte Tour</h2>
@@ -47,18 +64,38 @@ export default function FilterMenu({
           />
         </label>
 
-        {/*<label>
-          <span>Maximale Länge: {lengthNextHigherStep} km</span>
+        <label>
+          <span>Maximale Länge: {lengthKmPresetValue} km</span>
           <input
             min="1000"
             step={lengthStep * 1000}
             max={maxLengthM}
-            defaultValue={lengthNextHigherStep * 1000}
+            defaultValue={lengthKmPresetValue * 1000}
             type="range"
             name="lengthM"
             onChange={handleConfigChange}
           />
-        </label>*/}
+        </label>
+
+        <label>
+          <span>Nur Rundwege: </span>
+          <input
+            type="checkbox"
+            name="roundtrip"
+            defaultChecked={roundtripPresetValue}
+            onChange={handleCheckboxChange}
+          />
+        </label>
+
+        <label>
+          <span>Nur Premiumwege: </span>
+          <input
+            type="checkbox"
+            name="certYear"
+            defaultChecked={certYearPresetValue}
+            onChange={handleCheckboxChange}
+          />
+        </label>
 
         <button onClick={() => setIsFilterActive(false)}>Schließen</button>
       </Controls>

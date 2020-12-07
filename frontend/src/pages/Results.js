@@ -17,7 +17,7 @@ Results.propTypes = {
 export default function Results({ startingPoint }) {
   const lastSearchedPosition = getLastSavedPosition()
   const [filterCriteria, setFilterCriteria] = useState({
-    distance: 600000,
+    distance: 300000,
   })
   const [tracks, setTracks] = useState([])
 
@@ -39,12 +39,9 @@ export default function Results({ startingPoint }) {
     for (const key in filterCriteria) {
       if (track[key] === undefined) {
         return false
-      } else if (key === 'distance' && track[key] > filterCriteria[key]) {
-        return false
       } else if (
-        key === 'lengthM' &&
-        (track[key] < filterCriteria[key]?.min ||
-          track[key] > filterCriteria[key]?.max)
+        (key === 'distance' || key === 'lengthM') &&
+        track[key] > filterCriteria[key]
       ) {
         return false
       } else if (key === 'roundtrip' && track[key] !== filterCriteria[key]) {
