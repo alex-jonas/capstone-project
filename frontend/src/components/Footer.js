@@ -3,7 +3,7 @@ import styled from 'styled-components/macro'
 export default function Footer() {
   return (
     <Wrapper>
-      <h2>Impressum</h2>
+      <h2>Awesome Footer</h2>
     </Wrapper>
   )
 }
@@ -11,7 +11,7 @@ export default function Footer() {
 const Wrapper = styled.footer`
   width: 100%;
   height: 20vh;
-  background: var(--secondary-color);
+  background: var(--primary-color);
 
   h1 {
     line-height: 1;

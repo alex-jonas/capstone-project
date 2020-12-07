@@ -1,9 +1,9 @@
 import styled from 'styled-components/macro'
 import starSrc from '../assets/star.svg'
 import premiumSrc from '../assets/premium.svg'
-import getDifficultyName from '../services/getDifficultyName'
-import getHoursFromMinutes from '../services/getHoursFromMinutes'
-import getTagName from '../services/getTagName'
+import getDifficultyName from '../lib/getDifficultyName'
+import getHoursFromMinutes from '../lib/getHoursFromMinutes'
+import getTagName from '../lib/getTagName'
 import PropTypes from 'prop-types'
 
 TrackCard.propTypes = {
@@ -47,7 +47,7 @@ export default function TrackCard({ track }) {
                   minutes: durationMin,
                   length: lengthM,
                 }) +
-                ' Std.'}
+                ' Std'}
             </li>
             <li>
               <strong>Entfernung: </strong>{' '}
@@ -123,7 +123,9 @@ const TrackFacts = styled.section`
   strong {
     text-transform: uppercase;
     font-size: 0.8em;
+    font-weight: 400;
     color: var(--secondary-color);
+    letter-spacing: 1px;
   }
   ul {
     list-style: none;
@@ -131,9 +133,13 @@ const TrackFacts = styled.section`
     display: grid;
     grid-template-columns: 1fr 1fr;
     position: relative;
+    column-gap: 10%;
     li {
       padding: 8px 0;
       border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
     }
 
     li.premium {
@@ -149,11 +155,14 @@ const TrackFacts = styled.section`
 
     li.one-column {
       grid-column: 1 / -1;
+      display: block;
+      justify-content: unset;
     }
 
     span {
       font-size: 0.9em;
-      margin-right: 4px;
+      margin-right: 5px;
+      margin-left: 5px;
       margin-bottom: 4px;
       background-color: #3e382b20;
       border-radius: var(--default-border-radius);

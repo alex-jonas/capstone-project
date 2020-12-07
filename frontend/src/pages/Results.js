@@ -1,42 +1,34 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
-import getFromApi from '../services/getFromApi'
+import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
 import Map from '../components/Map'
 import controlsSrc from '../assets/controls.svg'
-import premiumSrc from '../assets/premium.svg'
-
-import starSrc from '../assets/star.svg'
-
-import filterNewSrc from '../assets/filter_new.svg'
-import getDifficultyName from '../services/getDifficultyName'
-import getHoursFromMinutes from '../services/getHoursFromMinutes'
-import getTagName from '../services/getTagName'
 import FilterMenu from '../components/FilterMenu'
 import TrackCard from '../components/TrackCard'
+import Footer from '../components/Footer'
+import saveLastPositionLocally from '../lib/saveLastPositionLocally'
+import getLastSavedPosition from '../lib/getLastSavedPosition'
 
 Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
 }
 
 export default function Results({ startingPoint }) {
-  const lastSearchedPosition = JSON.parse(
-    localStorage.getItem('lastSearchedPosition')
-  )
+  const lastSearchedPosition = getLastSavedPosition()
   const [filterCriteria, setFilterCriteria] = useState({
-    distance: 300000,
-    // roundtrip: true,
-    // lengthM: { min: 8000, max: 12000 },
+    distance: 600000,
   })
   const [tracks, setTracks] = useState([])
+
   const [centerCoords, setCenterCoords] = useState({
     lat: startingPoint.latitude || lastSearchedPosition.lat,
     lng: startingPoint.longitude || lastSearchedPosition.lng,
   })
-  const [isFilterActicve, setIsFilterActive] = useState(false)
+  const [isFilterActive, setIsFilterActive] = useState(false)
 
   useEffect(() => {
-    localStorage.setItem('lastSearchedPosition', JSON.stringify(centerCoords))
+    saveLastPositionLocally(centerCoords)
     const path = `track/${centerCoords.lat},${centerCoords.lng}`
     getFromApi(path)
       .then(({ data }) => setTracks(data))
@@ -45,19 +37,28 @@ export default function Results({ startingPoint }) {
 
   const filteredTracks = tracks.filter((track) => {
     for (const key in filterCriteria) {
-      if (track[key] === undefined) return false
+      if (track[key] === undefined) {
+        return false
+      } else if (key === 'distance' && track[key] > filterCriteria[key]) {
+        return false
+      } else if (
+        key === 'lengthM' &&
+        (track[key] < filterCriteria[key]?.min ||
+          track[key] > filterCriteria[key]?.max)
+      ) {
+        return false
+      } else if (key === 'roundtrip' && track[key] !== filterCriteria[key]) {
+        return false
+      } else if (key === 'difficulty' && track[key] !== filterCriteria[key]) {
+        return false
+      } else if (
+        key === 'certYear' &&
+        Boolean(track[key]) !== filterCriteria[key]
+      ) {
+        return false
+      }
     }
-    if (track['distance'] > filterCriteria['distance']) {
-      return false
-    } else if (track['lengthM'] < filterCriteria['lengthM']?.min) {
-      return false
-    } else if (track['lengthM'] > filterCriteria['lengthM']?.max) {
-      return false
-    } else if (track['roundtrip'] === filterCriteria['roundtrip']) {
-      return false
-    } else if (track['difficulty'] === filterCriteria['difficulty']) {
-      return false
-    } else return true
+    return true
   })
 
   return (
@@ -74,13 +75,20 @@ export default function Results({ startingPoint }) {
             <span>{Object.keys(filterCriteria).length}</span>
           )}
         </FilterButton>
+        <div>
+          {(filteredTracks.length === 0 ? 'Keine' : filteredTracks.length) +
+            ' Tour' +
+            (filteredTracks.length !== 1 ? 'en' : '') +
+            ' gefunden'}
+        </div>
       </FilterBar>
 
-      {isFilterActicve && (
+      {isFilterActive && (
         <FilterMenu
-          handleClick={setFilterCriteria}
           filterCriteria={filterCriteria}
+          setFilterCriteria={setFilterCriteria}
           setIsFilterActive={setIsFilterActive}
+          allTracks={tracks}
         />
       )}
 
@@ -89,6 +97,7 @@ export default function Results({ startingPoint }) {
           <TrackCard track={track} key={track.id} />
         ))}
       </ResultGrid>
+      <Footer />
     </Wrapper>
   )
 }
@@ -152,4 +161,5 @@ const ResultGrid = styled.div`
   align-content: start;
   gap: 20px;
   background: #ddd;
+  padding-top: 20px;
 `

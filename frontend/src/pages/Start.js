@@ -5,8 +5,8 @@ import wandergoldSrc from './../assets/wandergold.svg'
 import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
 import PropTypes from 'prop-types'
-import getFromApi from '../services/getFromApi'
-import getGeolocationOfUser from '../services/getGeolocationOfUser'
+import getFromApi from '../lib/getFromApi'
+import getGeolocationOfUser from '../lib/getGeolocationOfUser'
 import Loader from '../components/Loader'
 
 Start.propTypes = {

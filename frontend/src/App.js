@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import Footer from './components/Footer'
 import Header from './components/Header'
 import Results from './pages/Results'
 import Start from './pages/Start'
@@ -30,7 +29,6 @@ export default function App() {
           <>
             <Header />
             <Results startingPoint={startingPoint} />
-            <Footer />
           </>
         </Route>
 
