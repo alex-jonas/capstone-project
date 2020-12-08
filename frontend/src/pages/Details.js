@@ -17,11 +17,12 @@ Details.propTypes = {
 
 export default function Details({ track }) {
   let { urlId } = useParams()
-  console.log(track)
+
   return (
     <Wrapper>
       <Map
         centerCoords={{ lat: +track.firstLat, lng: +track.firstLon }}
+        kmlFile={track.kmlFile}
         singleMode
       />
 

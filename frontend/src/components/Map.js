@@ -1,4 +1,9 @@
-import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api'
+import {
+  useLoadScript,
+  GoogleMap,
+  Marker,
+  KmlLayer,
+} from '@react-google-maps/api'
 import { useRef } from 'react'
 
 export default function Map({
@@ -6,14 +11,16 @@ export default function Map({
   handleCenterChanged,
   tracks,
   singleMode,
+  kmlFile,
 }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
+  const baseUrlKml = process.env.REACT_APP_BASE_URL_KML
   const containerStyle = {
     width: '100%',
     height: singleMode ? '70vh' : '50vh',
   }
 
-  console.log(centerCoords)
+  console.log(apiKey, baseUrlKml)
 
   const options = {
     strokeColor: '#FF0000',
@@ -58,6 +65,7 @@ export default function Map({
       }}
       disableDefaultUI
     >
+      {singleMode && kmlFile && <KmlLayer url={baseUrlKml + kmlFile} />}
       <Marker position={centerCoords} />
       {!singleMode &&
         tracks.map(({ firstLat, firstLon }, index) => (
