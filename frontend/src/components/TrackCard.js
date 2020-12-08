@@ -10,7 +10,7 @@ TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
 }
 
-export default function TrackCard({ track }) {
+export default function TrackCard({ track, handleClick, detailedMode }) {
   const {
     id,
     difficulty,
@@ -25,14 +25,14 @@ export default function TrackCard({ track }) {
 
   return (
     <>
-      <Wrapper>
+      <Wrapper onClick={() => (!detailedMode ? handleClick(track) : false)}>
         <ImageHeading
           imgUrl={'https://source.unsplash.com/500x300/?forest,lake'}
         >
+          <h2>{title}</h2>
           <BookmarkButton>
             <img src={starSrc} alt={`Wanderung Nr. ${id} bookmarken`} />
           </BookmarkButton>
-          <h2>{title}</h2>
         </ImageHeading>
         <TrackFacts>
           <ul>
@@ -70,7 +70,7 @@ export default function TrackCard({ track }) {
                   <span key={tag}>{getTagName(tag)}</span>
                 ))}
             </li>
-            <li className="one-column">{description}</li>
+            {detailedMode && <li className="one-column">{description}</li>}
           </ul>
         </TrackFacts>
       </Wrapper>

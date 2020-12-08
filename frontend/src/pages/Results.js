@@ -14,7 +14,7 @@ Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
 }
 
-export default function Results({ startingPoint }) {
+export default function Results({ startingPoint, setSingleTrack }) {
   const lastSearchedPosition = getLastSavedPosition()
   const [filterCriteria, setFilterCriteria] = useState({
     distance: 300000,
@@ -22,8 +22,8 @@ export default function Results({ startingPoint }) {
   const [tracks, setTracks] = useState([])
 
   const [centerCoords, setCenterCoords] = useState({
-    lat: startingPoint.latitude || lastSearchedPosition.lat,
-    lng: startingPoint.longitude || lastSearchedPosition.lng,
+    lat: startingPoint?.latitude || lastSearchedPosition.lat,
+    lng: startingPoint?.longitude || lastSearchedPosition.lng,
   })
   const [isFilterActive, setIsFilterActive] = useState(false)
 
@@ -92,7 +92,11 @@ export default function Results({ startingPoint }) {
       {!isFilterActive && (
         <ResultGrid>
           {filteredTracks.map((track) => (
-            <TrackCard track={track} key={track.id} />
+            <TrackCard
+              track={track}
+              key={track.id}
+              handleClick={setSingleTrack}
+            />
           ))}
         </ResultGrid>
       )}

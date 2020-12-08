@@ -1,12 +1,19 @@
 import { useLoadScript, GoogleMap, Marker } from '@react-google-maps/api'
 import { useRef } from 'react'
 
-export default function Map({ centerCoords, handleCenterChanged, tracks }) {
+export default function Map({
+  centerCoords,
+  handleCenterChanged,
+  tracks,
+  singleMode,
+}) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
   const containerStyle = {
     width: '100%',
-    height: '50vh',
+    height: singleMode ? '70vh' : '50vh',
   }
+
+  console.log(centerCoords)
 
   const options = {
     strokeColor: '#FF0000',
@@ -52,9 +59,10 @@ export default function Map({ centerCoords, handleCenterChanged, tracks }) {
       disableDefaultUI
     >
       <Marker position={centerCoords} />
-      {tracks.map(({ firstLat, firstLon }, index) => (
-        <Marker key={index} position={{ lat: +firstLat, lng: +firstLon }} />
-      ))}
+      {!singleMode &&
+        tracks.map(({ firstLat, firstLon }, index) => (
+          <Marker key={index} position={{ lat: +firstLat, lng: +firstLon }} />
+        ))}
     </GoogleMap>
   )
 
