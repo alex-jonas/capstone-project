@@ -6,6 +6,7 @@ use App\Entity\Track;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
+
 /**
  * @method Track|null find($id, $lockMode = null, $lockVersion = null)
  * @method Track|null findOneBy(array $criteria, array $orderBy = null)
@@ -27,32 +28,19 @@ class TrackRepository extends ServiceEntityRepository
         return $track;
     }
 
-    // /**
-    //  * @return Track[] Returns an array of Track objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /* public function findByLocation(float $latOrigin, float $lngOrigin)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $earth_diameter = 12742; // 2 * Earth's radius (6371 km)
 
-    /*
-    public function findOneBySomeField($value): ?Track
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
+        $distanceKmSql = "$earth_diameter * ASIN(SQRT(POWER(SIN(($latOrigin - track.first_lat) * PI()/360), 2) + COS($latOrigin  * PI()/180) * COS(track.first_lat * PI()/180) * POWER(SIN(( $lngOrigin -  track_first_lon) * PI()/360), 2)))";
+        var_dump($this);
+        $result = $this->_em->createQueryBuilder('track')
+            ->select("track, $distanceKmSql AS HIDDEN track")
+            ->orderBy('track.distance', 'ASC')
+            ->setMaxResults(5)
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+            ->getResult();
+
+        return $result;
+    }*/
 }

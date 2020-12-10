@@ -8,16 +8,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
-class AutocompleteController extends AbstractController
+class GeocodeController extends AbstractController
 {
     /**
-     * @Route("/autocomplete/{place}", name="autocomplete")
+     * @Route("/geocode/{placeid}", name="geocode")
      */
-    public function index(string $place, HttpClientInterface $client): JsonResponse
+    public function index(string $placeid, HttpClientInterface $client): JsonResponse
     {
         $apiKey = $this->getParameter("app.google_api_key");
 
-        if (!$place) {
+        if (!$placeid) {
             return new JsonResponse(
                 ['success' => 'no'],
                 JsonResponse::HTTP_BAD_REQUEST,
@@ -29,7 +29,7 @@ class AutocompleteController extends AbstractController
 
         $response = $this->client->request(
             'GET',
-            "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$place&key=$apiKey&language=de"
+            "https://maps.googleapis.com/maps/api/geocode/json?place_id=$placeid&key=$apiKey"
         );
 
         $statusCode = $response->getStatusCode();

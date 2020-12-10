@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import styled from 'styled-components/macro'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSrc from './../assets/wandergold.svg'
 import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
-import { useState } from 'react'
 import PropTypes from 'prop-types'
+import getFromApi from '../lib/getFromApi'
+import getGeolocationOfUser from '../lib/getGeolocationOfUser'
+import Loader from '../components/Loader'
 
 Start.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -21,7 +24,7 @@ export default function Start({ handleSubmit }) {
           <img src={wandergoldSrc} alt="wandergold" />
         </h1>
       </LogoArea>
-      <LocationSearch>
+      <LocationSearch onSubmit={(event) => event.preventDefault()}>
         <SearchField active={isSearchFocused}>
           {isSearchFocused && (
             <button type="button" onClick={() => setIsSearchFocused(false)}>
@@ -29,10 +32,13 @@ export default function Start({ handleSubmit }) {
             </button>
           )}
           <input
-            onChange={(event) => getSuggestions(event.target.value)}
+            onChange={(event) => {
+              !suggestionList.length && setSuggestionList([{ loading: true }])
+              getSuggestions(event.target.value)
+            }}
             onFocus={() => setIsSearchFocused(true)}
             type="text"
-            placeholder={!isSearchFocused && 'wo willst du hin?'}
+            placeholder={!isSearchFocused ? 'wo willst du hin?' : ''}
           />
         </SearchField>
         {isSearchFocused && (
@@ -42,76 +48,96 @@ export default function Start({ handleSubmit }) {
                 {navigator.geolocation && (
                   <li
                     className="geoLocator"
-                    onClick={() => getGeolocationOfUser()}
+                    onClick={() => {
+                      getGeolocationOfUser(handleSubmit, {
+                        locationName: 'Mein Standort',
+                        isReadyToSearch: true,
+                      })
+                    }}
                   >
                     Mein Standort
                   </li>
                 )}
 
-                {suggestionList.map(({ description, place_id }) => (
-                  <li
-                    onClick={() =>
-                      handleSubmit({
-                        description: description,
-                        googlePlaceId: place_id,
-                        isReadyToSearch: true,
-                      })
-                    }
-                    key={place_id}
-                  >
-                    {description}
-                  </li>
-                ))}
+                {suggestionList.map(
+                  ({ loading, description, googlePlaceId }) => (
+                    <>
+                      {loading && (
+                        <li key="loading">
+                          <Loader />
+                        </li>
+                      )}
+                      <li
+                        onClick={() =>
+                          getCoordsAndSearch(description, googlePlaceId)
+                        }
+                        key={googlePlaceId}
+                      >
+                        {description}
+                      </li>
+                    </>
+                  )
+                )}
               </>
             </ul>
-            <button>Tour finden</button>
           </SearchSuggestions>
         )}
       </LocationSearch>
     </Wrapper>
   )
 
-  function getGeolocationOfUser() {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        handleSubmit({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          locationName: 'Mein Standort',
-          isReadyToSearch: true,
-        })
-      },
-      function (error) {
-        console.error(error)
-      }
-    )
-  }
-
   function getSuggestions(placeString) {
     const place = placeString.trim()
-    if (place.length > 3) {
-      const url = `http://wandergold.local/autocomplete/${place}`
-      fetch(url)
-        .then((res) => res.json())
-        .then(({ predictions }) => setSuggestionList(predictions.slice(0, 4)))
-        .catch((error) => console.error('Error:', error))
+    if (place.length > 2) {
+      const path = `autocomplete/${place}`
+      getFromApi(path)
+        .then((response) => response.data.predictions)
+        .then((suggestions) =>
+          suggestions.map(({ description, place_id }) => ({
+            description: description,
+            googlePlaceId: place_id,
+          }))
+        )
+        .then((suggestions) => setSuggestionList(suggestions.slice(0, 4)))
+        .catch(() =>
+          setSuggestionList([
+            { description: 'Service nicht verfügbar', googlePlaceId: 'error' },
+          ])
+        )
     } else {
       setSuggestionList([])
     }
+  }
+
+  function getCoordsAndSearch(description, googlePlaceId) {
+    const path = `geocode/${googlePlaceId}`
+    getFromApi(path)
+      .then((response) => response.data.results[0].geometry)
+      .then((geometry) => {
+        const searchObject = {
+          locationName: description,
+          googlePlaceId: googlePlaceId,
+          latitude: geometry.location.lat,
+          longitude: geometry.location.lng,
+          isReadyToSearch: true,
+        }
+        handleSubmit(searchObject)
+      })
   }
 }
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-rows: 60% 40%;
   background-image: url(${startscreenJpg});
-  background-size: auto 100vh;
-  background-position-x: center;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   padding: 5%;
   padding-top: 0;
+  position: relative;
 `
 
 const LogoArea = styled.div`

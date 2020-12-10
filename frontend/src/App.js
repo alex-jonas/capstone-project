@@ -1,20 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
-import Start from './components/Start'
-import getFromApi from './services/getFromApi'
+import Header from './components/Header'
+import Results from './pages/Results'
+import Start from './pages/Start'
 
 export default function App() {
-  const [tracks, setTracks] = useState([])
-
-   useEffect(
-    () =>
-      getFromApi('track')
-        .then((data) => setTracks(data))
-        .catch((error) => console.error('Error:', error)),
-    []
-  )
-
   const [startingPoint, setStartingPoint] = useState({
     latitude: null,
     longitude: null,
@@ -28,24 +19,23 @@ export default function App() {
       <Switch>
         <Route exact path="/">
           {startingPoint.isReadyToSearch ? (
-            <Redirect to="/tracklist" />
+            <Redirect to="/results" />
           ) : (
             <Start handleSubmit={setStartingPoint} />
           )}
         </Route>
-        <Route path="/tracklist">
-          {tracks.map(({ id, description, title }, index) => (
-            <Track key={id}>
-              <h2>
-                {index + 1} {title}
-              </h2>
-              <p>{description}</p>
-            </Track>
-          ))}
+
+        <Route path="/results">
+          <>
+            <Header />
+            <Results startingPoint={startingPoint} />
+          </>
         </Route>
 
-        <Route exact path="/signup">
-          <div>Register</div>
+        <Route exact path="/filter">
+          <>
+            <div>Register</div>
+          </>
         </Route>
       </Switch>
     </PageLayout>
@@ -59,16 +49,6 @@ const PageLayout = styled.div`
   min-width: 250px;
   margin: 0 auto;
   box-shadow: 0px 0px 25px 0px #000;
-`
-
-const Track = styled.section`
-  width: 300px;
-  background: #eee;
-
-  h2 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 1.2em;
-    line-height: 1;
-    color: var(--heading-color);
-  }
+  background: #fff;
+  position: relative;
 `
