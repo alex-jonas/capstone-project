@@ -10,6 +10,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GeocodeController extends AbstractController
 {
+    private $client;
+
     /**
      * @Route("/geocode/{placeid}", name="geocode")
      */

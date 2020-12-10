@@ -10,6 +10,8 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class AutocompleteController extends AbstractController
 {
+
+    private $client;
     /**
      * @Route("/autocomplete/{place}", name="autocomplete")
      */

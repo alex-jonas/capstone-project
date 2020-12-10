@@ -20,8 +20,6 @@ export default function Map({
     height: singleMode ? '70vh' : '50vh',
   }
 
-  console.log(apiKey, baseUrlKml)
-
   const options = {
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
