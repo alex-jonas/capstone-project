@@ -5,6 +5,8 @@ import getDifficultyName from '../lib/getDifficultyName'
 import getHoursFromMinutes from '../lib/getHoursFromMinutes'
 import getTagName from '../lib/getTagName'
 import PropTypes from 'prop-types'
+import getFormattedDate from '../lib/getFormattedDate'
+import WayTypesBar from './WayTypesBar'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
@@ -21,6 +23,8 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
     durationMin,
     description,
     tags,
+    dateCreated,
+    surface,
   } = track
 
   return (
@@ -42,7 +46,7 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
             </li>
             <li>
               <strong>Dauer: </strong>
-              {'etwa ' +
+              {'ca. ' +
                 getHoursFromMinutes({
                   minutes: durationMin,
                   length: lengthM,
@@ -64,13 +68,37 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
             )}
             <li className="one-column">
               <strong>Tour Tags: </strong>
+
               {tags
                 .sort(() => Math.random() - 0.5)
                 .map((tag) => (
-                  <span key={tag}>{getTagName(tag)}</span>
+                  <span className="tourtag" key={tag}>
+                    {getTagName(tag)}
+                  </span>
                 ))}
             </li>
-            {detailedMode && <li className="one-column">{description}</li>}
+            {detailedMode && (
+              <>
+                {certYear && (
+                  <li>
+                    <strong>Zertifizierung:</strong>
+                    {certYear}
+                  </li>
+                )}
+                <li>
+                  <strong>Bearbeitet:</strong>
+                  {getFormattedDate(dateCreated)}
+                </li>
+                {surface && (
+                  <li className="one-column">
+                    <strong>Wegbeschaffenheit</strong>
+                    <WayTypesBar surfaceValues={surface} />
+                  </li>
+                )}
+
+                <li className="one-column description">{description}</li>
+              </>
+            )}
           </ul>
         </TrackFacts>
       </Wrapper>
@@ -99,7 +127,6 @@ const BookmarkButton = styled.button`
 const ImageHeading = styled.section`
   display: grid;
   background: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80');
-  xbackground: url(${(props) => props.imgUrl});
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -121,7 +148,7 @@ const ImageHeading = styled.section`
   }
 `
 const TrackFacts = styled.section`
-  font-size: 0.8em;
+  font-size: 0.85em;
 
   strong {
     text-transform: uppercase;
@@ -129,6 +156,7 @@ const TrackFacts = styled.section`
     font-weight: 400;
     color: var(--secondary-color);
     letter-spacing: 1px;
+    margin-right: 8px;
   }
   ul {
     list-style: none;
@@ -138,10 +166,7 @@ const TrackFacts = styled.section`
     position: relative;
     column-gap: 10%;
     li {
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
+      padding: 13px 0;
       align-items: baseline;
     }
 
@@ -161,16 +186,21 @@ const TrackFacts = styled.section`
       display: block;
       justify-content: unset;
     }
+    li.description {
+      font-size: 1.2em;
+      line-height: 1.5;
+    }
 
-    span {
+    span.tourtag {
       font-size: 0.9em;
       margin-right: 5px;
-      margin-left: 5px;
       margin-bottom: 4px;
-      background-color: #3e382b20;
+      background-color: #3e382b30;
       border-radius: var(--default-border-radius);
-      padding: 2px 4px;
+      padding: 8px;
       display: inline-block;
+      white-space: nowrap;
+      letter-spacing: 1px;
     }
   }
 `

@@ -3,16 +3,12 @@ import styled from 'styled-components/macro'
 import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
 import Map from '../components/Map'
-import controlsSrc from '../assets/controls.svg'
-import FilterMenu from '../components/FilterMenu'
 import TrackCard from '../components/TrackCard'
 import Footer from '../components/Footer'
-import saveLastPositionLocally from '../lib/saveLastPositionLocally'
-import getLastSavedPosition from '../lib/getLastSavedPosition'
 import { useParams } from 'react-router-dom'
 
 Details.propTypes = {
-  startingPoint: PropTypes.object.isRequired,
+  track: PropTypes.object.isRequired,
 }
 
 export default function Details({ track }) {

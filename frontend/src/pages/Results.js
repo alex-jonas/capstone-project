@@ -164,5 +164,6 @@ const ResultGrid = styled.div`
   align-content: start;
   gap: 20px;
   background: #ddd;
+  padding: 10px;
   padding-top: 20px;
 `
