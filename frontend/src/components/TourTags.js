@@ -4,19 +4,22 @@ import getTagName from '../lib/getTagName'
 export default function TourTags({ tagIds }) {
   return (
     <Wrapper>
-      {tagIds
-        .sort(() => Math.random() - 0.5)
-        .map((tagId) => (
-          <span className="tourtag" key={tagId}>
-            {getTagName(tagId)}
-          </span>
-        ))}
+      {Array.isArray(tagIds)
+        ? tagIds
+            .sort(() => Math.random() - 0.5)
+            .map((tagId) => (
+              <span className="tourtag" key={tagId}>
+                {getTagName(tagId)}
+              </span>
+            ))
+        : '-'}
     </Wrapper>
   )
 }
 
 const Wrapper = styled.div`
   margin-top: 10px;
+
   span.tourtag {
     font-size: 0.9em;
     margin-right: 5px;

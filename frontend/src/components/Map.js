@@ -35,13 +35,6 @@ export default function Map({
     fullscreenControl: false,
     mapTypeControl: false,
     mapTypeId: 'terrain',
-
-    paths: [
-      { lat: 37.772, lng: -122.214 },
-      { lat: 21.291, lng: -157.821 },
-      { lat: -18.142, lng: 178.431 },
-      { lat: -27.467, lng: 153.027 },
-    ],
     zIndex: 1,
   }
   const mapRef = useRef()
@@ -59,7 +52,7 @@ export default function Map({
       options={options}
       onDragEnd={() => {
         const { lat, lng } = mapRef.current.getCenter().toJSON()
-        handleCenterChanged({ lat: +lat, lng: +lng })
+        !singleMode && handleCenterChanged({ lat: +lat, lng: +lng })
       }}
       disableDefaultUI
     >
@@ -71,24 +64,6 @@ export default function Map({
         ))}
     </GoogleMap>
   )
-
+  console.log(mapRef)
   return isLoaded ? map : null
 }
-/*
-
- <Polyline
-          onLoad={onLoad}
-          path={path}
-          options={options}
-        />
-
-const onLoad = (polyline) => {
-  console.log('polyline: ', polyline)
-}
-
-const path = [
-  { lat: 37.772, lng: -122.214 },
-  { lat: 21.291, lng: -157.821 },
-  { lat: -18.142, lng: 178.431 },
-  { lat: -27.467, lng: 153.027 },
-]*/

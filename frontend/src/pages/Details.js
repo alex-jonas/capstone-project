@@ -6,13 +6,22 @@ import Map from '../components/Map'
 import TrackCard from '../components/TrackCard'
 import Footer from '../components/Footer'
 import { useParams } from 'react-router-dom'
+import getLastSavedPosition from '../lib/getLastSavedPosition'
 
 Details.propTypes = {
   track: PropTypes.object.isRequired,
 }
 
-export default function Details({ track }) {
+export default function Details({ track, setSingleTrack }) {
   let { urlId } = useParams()
+
+  const lastPosition = getLastSavedPosition()
+  const lastPositionPair = Object.values(lastPosition).join()
+
+  !track.id &&
+    getFromApi(`single-track/${urlId}/${lastPositionPair}`)
+      .then(({ data }) => setSingleTrack(data))
+      .catch((e) => console.error(e))
 
   return (
     <Wrapper>

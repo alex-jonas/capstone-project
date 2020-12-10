@@ -42,10 +42,10 @@ export default function App() {
           )}
         </Route>
 
-        <Route path="/details/:id">
+        <Route path="/details/:urlId">
           <>
             <Header />
-            <Details track={singleTrack} />
+            <Details track={singleTrack} setSingleTrack={setSingleTrack} />
           </>
         </Route>
       </Switch>
