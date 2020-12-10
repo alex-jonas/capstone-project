@@ -7,6 +7,7 @@ import getTagName from '../lib/getTagName'
 import PropTypes from 'prop-types'
 import getFormattedDate from '../lib/getFormattedDate'
 import WayTypesBar from './WayTypesBar'
+import TourTags from './TourTags'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
@@ -66,29 +67,16 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
                 <img src={premiumSrc} alt="Premiumweg" />
               </li>
             )}
-            <li className="one-column">
-              <strong>Tour Tags: </strong>
 
-              {tags
-                .sort(() => Math.random() - 0.5)
-                .map((tag) => (
-                  <span className="tourtag" key={tag}>
-                    {getTagName(tag)}
-                  </span>
-                ))}
-            </li>
             {detailedMode && (
               <>
                 {certYear && (
-                  <li>
+                  <li className="one-column">
                     <strong>Zertifizierung:</strong>
                     {certYear}
                   </li>
                 )}
-                <li>
-                  <strong>Bearbeitet:</strong>
-                  {getFormattedDate(dateCreated)}
-                </li>
+
                 {surface && (
                   <li className="one-column">
                     <strong>Wegbeschaffenheit</strong>
@@ -98,6 +86,17 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
 
                 <li className="one-column description">{description}</li>
               </>
+            )}
+
+            <li className="one-column">
+              <strong>Tour Tags: </strong>
+              <TourTags tagIds={tags} />
+            </li>
+            {detailedMode && (
+              <li className="one-column">
+                <strong>Stand:</strong>
+                {getFormattedDate(dateCreated)}
+              </li>
             )}
           </ul>
         </TrackFacts>
@@ -164,7 +163,7 @@ const TrackFacts = styled.section`
     display: grid;
     grid-template-columns: 1fr 1fr;
     position: relative;
-    column-gap: 10%;
+    column-gap: 5px;
     li {
       padding: 13px 0;
       align-items: baseline;
@@ -189,18 +188,6 @@ const TrackFacts = styled.section`
     li.description {
       font-size: 1.2em;
       line-height: 1.5;
-    }
-
-    span.tourtag {
-      font-size: 0.9em;
-      margin-right: 5px;
-      margin-bottom: 4px;
-      background-color: #3e382b30;
-      border-radius: var(--default-border-radius);
-      padding: 8px;
-      display: inline-block;
-      white-space: nowrap;
-      letter-spacing: 1px;
     }
   }
 `
