@@ -1,5 +1,3 @@
-import { getQueriesForElement } from '@testing-library/react'
-import { resetWarningCache } from 'prop-types'
 import styled from 'styled-components/macro'
 import closeSrc from '../assets/close.svg'
 

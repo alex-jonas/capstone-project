@@ -1,9 +1,12 @@
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import wandergoldSrc from './../assets/wandergold.svg'
 
 export default function Header() {
+  const history = useHistory()
   return (
     <Wrapper>
+      <button onClick={() => history.goBack()}>Go back</button>
       <h1>
         <img src={wandergoldSrc} alt="wandergold" />
       </h1>
@@ -31,5 +34,10 @@ const Wrapper = styled.header`
 
   img {
     height: 30px;
+  }
+
+  button {
+    position: absolute;
+    left: 0;
   }
 `

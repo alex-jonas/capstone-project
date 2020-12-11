@@ -7,6 +7,7 @@ import TrackCard from '../components/TrackCard'
 import Footer from '../components/Footer'
 import { useParams } from 'react-router-dom'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
+import ResultGrid from '../components/ResultGrid'
 
 Details.propTypes = {
   track: PropTypes.object.isRequired,
@@ -31,8 +32,6 @@ export default function Details({ track, setSingleTrack }) {
       <ResultGrid>
         <TrackCard track={track} key={track.id} detailedMode />
       </ResultGrid>
-
-      <Footer />
     </Wrapper>
   )
 }
@@ -43,13 +42,4 @@ const Wrapper = styled.main`
   overflow: scroll;
   position: relative;
   padding-top: 46px;
-`
-
-const ResultGrid = styled.div`
-  display: grid;
-  align-content: start;
-  gap: 20px;
-  background: #ddd;
-  padding: 10px;
-  padding-top: 20px;
 `

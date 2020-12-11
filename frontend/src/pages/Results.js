@@ -9,6 +9,8 @@ import TrackCard from '../components/TrackCard'
 import Footer from '../components/Footer'
 import saveLastPositionLocally from '../lib/saveLastPositionLocally'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
+import ButtonDefault from '../components/ButtonDefault'
+import ResultGrid from '../components/ResultGrid'
 
 Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
@@ -67,7 +69,7 @@ export default function Results({ startingPoint, setSingleTrack }) {
       />
       <FilterBar>
         <FilterButton onClick={() => setIsFilterActive(true)}>
-          <strong>Filter</strong>{' '}
+          <strong>Filter</strong>
           {Object.keys(filterCriteria).length > 0 && (
             <span>{Object.keys(filterCriteria).length}</span>
           )}
@@ -101,7 +103,6 @@ export default function Results({ startingPoint, setSingleTrack }) {
           ))}
         </ResultGrid>
       )}
-      <Footer />
     </Wrapper>
   )
 }
@@ -141,30 +142,11 @@ const FilterBar = styled.section`
   }
 `
 
-const FilterButton = styled.button`
-  width: 100%;
-  height: 40px;
-  background-color: var(--primary-color);
-  border: 0;
-  box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.65);
-  color: #eee;
-  font-size: 1em;
-
+const FilterButton = styled(ButtonDefault)`
   strong {
     background-color: transparent;
     background-image: url(${controlsSrc});
     background-repeat: no-repeat;
     background-position-x: left;
-    padding-left: 25px;
-    letter-spacing: 0.1em;
   }
-`
-
-const ResultGrid = styled.div`
-  display: grid;
-  align-content: start;
-  gap: 20px;
-  background: #ddd;
-  padding: 10px;
-  padding-top: 20px;
 `

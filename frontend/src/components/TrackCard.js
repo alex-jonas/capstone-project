@@ -8,6 +8,8 @@ import PropTypes from 'prop-types'
 import getFormattedDate from '../lib/getFormattedDate'
 import WayTypesBar from './WayTypesBar'
 import TourTags from './TourTags'
+import ButtonDefault from './ButtonDefault'
+import openExternalLink from '../lib/openExternalLink'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
@@ -28,7 +30,14 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
     surface,
     elevation,
     region,
+    firstLat,
+    firstLon,
   } = track
+
+  const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
+
+  const staticMapImgSrc = `https://maps.googleapis.com/maps/api/staticmap?center=${firstLat},${firstLon}&zoom=10&size=400x200&key=${apiKey}&maptype=terrain&scale=2&markers=color:0x4C6A28|${firstLat},${firstLon}`
+  const googleRouteHref = `https://google.com/maps/?daddr=${firstLat},${firstLon}`
 
   return (
     <>
@@ -51,11 +60,22 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
           </BookmarkButton>
         </ImageHeading>
 
-        <TrackFacts>
+        <TrackFacts staticMapUrl={staticMapImgSrc}>
           <ul>
             {detailedMode && (
               <>
                 <li className="one-column description">{description}</li>
+
+                <li className="one-column static-map"></li>
+                <li className="one-column static-map-menu">
+                  <MapMenuButton>Detailkarte</MapMenuButton>
+                  <MapMenuButton>Tour merken</MapMenuButton>
+                  <MapMenuButton
+                    onClick={() => openExternalLink(googleRouteHref)}
+                  >
+                    Anfahrt
+                  </MapMenuButton>
+                </li>
               </>
             )}
 
@@ -94,14 +114,14 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
                 </li>
                 {certYear && (
                   <li className="one-column">
-                    <strong>Zertifizierung:</strong>
+                    <strong>Premiumweg seit:</strong>
                     {certYear}
                   </li>
                 )}
 
                 {elevation && (
                   <li className="one-column">
-                    <strong>Höhenunterschied: </strong> {elevation} m{certYear}
+                    <strong>Höhenunterschied: </strong> {elevation} m
                   </li>
                 )}
 
@@ -148,15 +168,14 @@ const Wrapper = styled.section`
   }
 
   h2 {
-    row-gap: ${(props) => (props.detailedMode ? '8px 0' : '0')};
-
+    margin: ${(props) => (props.detailedMode ? '15px 0' : '0')};
     font-family: 'Kanit', sans-serif;
-    font-size: ${(props) => (props.detailedMode ? '2em' : '1.3em')};
+    font-size: ${(props) => (props.detailedMode ? '1.7em' : '1.3em')};
     line-height: 1;
-    color: ${(props) => (props.detailedMode ? 'var(--primary-color)' : '#fff')};
+    color: ${(props) => (props.detailedMode ? '#3F4F2C' : '#fff')};
     text-align: ${(props) => (props.detailedMode ? 'left' : 'center')};
     text-shadow: ${(props) =>
-      props.detailedMode ? 'none' : '0px 0px 9px rgba(0, 0, 0, 0.8);'};
+      props.detailedMode ? 'none' : '0px 0px 9px rgba(0, 0, 0, 0.8)'};
   }
 `
 
@@ -181,8 +200,8 @@ const ImageHeading = styled.section`
   z-index: 50;
   border-radius: var(--default-border-radius);
   height: ${(props) => (props.big ? '50vh' : 'unset')};
-  }
 `
+
 const TrackFacts = styled.section`
   font-size: 0.85em;
 
@@ -226,5 +245,23 @@ const TrackFacts = styled.section`
       font-size: 1.2em;
       line-height: 1.5;
     }
+
+    li.static-map {
+      height: 170px;
+      background-image: url(${(props) => props.staticMapUrl});
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    li.static-map-menu {
+      display: flex;
+      margin-top: -15px;
+    }
   }
+`
+
+const MapMenuButton = styled(ButtonDefault)`
+  font-size: 0.8em;
+  color: #fff;
 `
