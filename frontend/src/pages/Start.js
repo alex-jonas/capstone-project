@@ -48,12 +48,12 @@ export default function Start({ handleSubmit }) {
                 {navigator.geolocation && (
                   <li
                     className="geoLocator"
-                    onClick={() => {
+                    onClick={() =>
                       getGeolocationOfUser(handleSubmit, {
                         locationName: 'Mein Standort',
                         isReadyToSearch: true,
                       })
-                    }}
+                    }
                   >
                     Mein Standort
                   </li>

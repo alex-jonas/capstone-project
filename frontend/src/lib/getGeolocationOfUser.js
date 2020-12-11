@@ -1,9 +1,9 @@
 export default function getGeolocationOfUser(
-  setFunction,
-  additionalProperties = {}
+  setLocationFn,
+  additionalProperties
 ) {
   navigator.geolocation.getCurrentPosition((position) => {
-    setFunction({
+    setLocationFn({
       latitude: position.coords.latitude,
       longitude: position.coords.longitude,
       ...additionalProperties,

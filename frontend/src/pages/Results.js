@@ -96,6 +96,7 @@ export default function Results({ startingPoint, setSingleTrack }) {
               track={track}
               key={track.id}
               handleClick={setSingleTrack}
+              detailedMode={false}
             />
           ))}
         </ResultGrid>

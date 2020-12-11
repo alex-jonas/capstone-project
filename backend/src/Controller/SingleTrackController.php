@@ -16,28 +16,28 @@ class SingleTrackController extends AbstractController
     /**
      * @Route("/single-track/{id}/{coordPair}", methods={"GET"})
      */
-    public function index(int $id, ?string $coordPair,  SerializerInterface $serializer, GeoDistance $geodistance): JsonResponse
+    public function index(int $id, ?string $coordPair = null,  SerializerInterface $serializer, GeoDistance $geodistance): JsonResponse
     {
-        /* if (
-            !strpos($coordPair, ",") ||
-            preg_match_all("/[+-]?([0-9]*[.])?[0-9]+/", $coordPair) != 2
-        ) {
+        if (!is_null($coordPair) && (!strpos($coordPair, ",") ||
+            preg_match_all("/[+-]?([0-9]*[.])?[0-9]+/", $coordPair) != 2)) {
             return new JsonResponse(
                 ['success' => 'no'],
                 JsonResponse::HTTP_BAD_REQUEST,
                 []
             );
-        }*/
-
-        [$latOrigin, $lngOrigin] = array_map('floatval', explode(",", $coordPair));
+        }
 
         $singleTrack =  $this->getDoctrine()->getRepository(Track::class)->find($id);
 
+        if (!is_null($coordPair)) {
+            [$latOrigin, $lngOrigin] = array_map('floatval', explode(",", $coordPair));
 
-        $latDestination = $singleTrack->getFirstLat();
-        $lngDestination = $singleTrack->getFirstLon();
-        $calculatedDistance = $geodistance->getDistanceMeters($latOrigin, $lngOrigin, $latDestination, $lngDestination);
-        $singleTrack->setDistance($calculatedDistance);
+            $latDestination = $singleTrack->getFirstLat();
+            $lngDestination = $singleTrack->getFirstLon();
+            $calculatedDistance = $geodistance->getDistanceMeters($latOrigin, $lngOrigin, $latDestination, $lngDestination);
+            $singleTrack->setDistance($calculatedDistance);
+        }
+
 
         return new JsonResponse(
             $serializer->serialize($singleTrack, 'json'),

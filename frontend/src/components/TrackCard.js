@@ -26,21 +26,39 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
     tags,
     dateCreated,
     surface,
+    elevation,
+    region,
   } = track
 
   return (
     <>
-      <Wrapper onClick={() => (!detailedMode ? handleClick(track) : false)}>
+      <Wrapper
+        onClick={() => (!detailedMode ? handleClick(track) : false)}
+        detailedMode={detailedMode}
+      >
+        {detailedMode && (
+          <>
+            <h2>{title}</h2>
+          </>
+        )}
         <ImageHeading
           imgUrl={'https://source.unsplash.com/500x300/?forest,lake'}
+          big={detailedMode}
         >
-          <h2>{title}</h2>
+          {!detailedMode && <h2>{title}</h2>}
           <BookmarkButton>
             <img src={starSrc} alt={`Wanderung Nr. ${id} bookmarken`} />
           </BookmarkButton>
         </ImageHeading>
+
         <TrackFacts>
           <ul>
+            {detailedMode && (
+              <>
+                <li className="one-column description">{description}</li>
+              </>
+            )}
+
             <li>
               <strong>Länge: </strong>
               {Math.round(lengthM / 100) / 10 + ' km'}
@@ -55,8 +73,8 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
                 ' Std'}
             </li>
             <li>
-              <strong>Entfernung: </strong>{' '}
-              {Math.round(distance / 1000) + ' km'}
+              <strong>Entfernung: </strong>
+              {distance ? Math.round(distance / 1000) + ' km' : '-'}
             </li>
             <li>
               <strong>Anspruch: </strong>
@@ -70,10 +88,20 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
 
             {detailedMode && (
               <>
+                <li className="one-column">
+                  <strong>Region:</strong>
+                  {region}
+                </li>
                 {certYear && (
                   <li className="one-column">
                     <strong>Zertifizierung:</strong>
                     {certYear}
+                  </li>
+                )}
+
+                {elevation && (
+                  <li className="one-column">
+                    <strong>Höhenunterschied: </strong> {elevation} m{certYear}
                   </li>
                 )}
 
@@ -83,8 +111,6 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
                     <WayTypesBar surfaceValues={surface} />
                   </li>
                 )}
-
-                <li className="one-column description">{description}</li>
               </>
             )}
 
@@ -111,7 +137,27 @@ const Wrapper = styled.section`
   box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
   background: #fff;
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: ${(props) => (props.detailedMode ? 'none' : '1fr 1fr')};
+
+  h3 {
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: 400;
+    color: var(--secondary-color);
+    letter-spacing: 1px;
+  }
+
+  h2 {
+    row-gap: ${(props) => (props.detailedMode ? '8px 0' : '0')};
+
+    font-family: 'Kanit', sans-serif;
+    font-size: ${(props) => (props.detailedMode ? '2em' : '1.3em')};
+    line-height: 1;
+    color: ${(props) => (props.detailedMode ? 'var(--primary-color)' : '#fff')};
+    text-align: ${(props) => (props.detailedMode ? 'left' : 'center')};
+    text-shadow: ${(props) =>
+      props.detailedMode ? 'none' : '0px 0px 9px rgba(0, 0, 0, 0.8);'};
+  }
 `
 
 const BookmarkButton = styled.button`
@@ -134,16 +180,7 @@ const ImageHeading = styled.section`
   position: relative;
   z-index: 50;
   border-radius: var(--default-border-radius);
-
-  h2 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 1.2em;
-    line-height: 1;
-    color: #fff;
-    margin: 0;
-    font-size: 1.3em;
-    text-align: center;
-    text-shadow: 0px 0px 9px rgba(0, 0, 0, 0.8);
+  height: ${(props) => (props.big ? '50vh' : 'unset')};
   }
 `
 const TrackFacts = styled.section`

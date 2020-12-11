@@ -16,7 +16,10 @@ export default function Details({ track, setSingleTrack }) {
   let { urlId } = useParams()
 
   const lastPosition = getLastSavedPosition()
-  const lastPositionPair = Object.values(lastPosition).join()
+
+  const lastPositionPair = lastPosition
+    ? Object.values(lastPosition).join()
+    : ''
 
   !track.id &&
     getFromApi(`single-track/${urlId}/${lastPositionPair}`)
@@ -25,12 +28,6 @@ export default function Details({ track, setSingleTrack }) {
 
   return (
     <Wrapper>
-      <Map
-        centerCoords={{ lat: +track.firstLat, lng: +track.firstLon }}
-        kmlFile={track.kmlFile}
-        singleMode
-      />
-
       <ResultGrid>
         <TrackCard track={track} key={track.id} detailedMode />
       </ResultGrid>
