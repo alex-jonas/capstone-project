@@ -9,6 +9,7 @@ import WayTypesBar from './WayTypesBar'
 import TourTags from './TourTags'
 import ButtonDefault from './ButtonDefault'
 import openExternalLink from '../lib/openExternalLink'
+import saveToBookmarks from '../lib/saveToBookmarks'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
@@ -72,7 +73,9 @@ export default function TrackCard({
                   <MapMenuButton onClick={() => setIsDetailMapActive(true)}>
                     Detailkarte
                   </MapMenuButton>
-                  <MapMenuButton>Tour merken</MapMenuButton>
+                  <MapMenuButton onClick={() => saveToBookmarks(id)}>
+                    Tour merken
+                  </MapMenuButton>
                   <MapMenuButton
                     onClick={() => openExternalLink(googleRouteHref)}
                   >
