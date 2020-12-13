@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
-import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
 import Map from '../components/Map'
 import controlsSrc from '../assets/controls.svg'
 import FilterMenu from '../components/FilterMenu'
 import TrackCard from '../components/TrackCard'
-import saveLastPositionLocally from '../lib/saveLastPositionLocally'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
 import ButtonDefault from '../components/ButtonDefault'
 import ResultGrid from '../components/ResultGrid'
+import updateCenter from '../lib/updateCenter'
 
 Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
@@ -29,9 +28,7 @@ export default function Results({ startingPoint, setSingleTrack }) {
   const [isFilterActive, setIsFilterActive] = useState(false)
 
   useEffect(() => {
-    saveLastPositionLocally(centerCoords)
-    const path = `track/${centerCoords.lat},${centerCoords.lng}`
-    getFromApi(path)
+    updateCenter(centerCoords)
       .then(({ data }) => setTracks(data))
       .catch((error) => console.error('Error:', error))
   }, [centerCoords])
