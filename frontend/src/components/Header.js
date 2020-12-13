@@ -1,7 +1,7 @@
 import styled from 'styled-components/macro'
 import wandergoldSrc from './../assets/wandergold.svg'
 
-export default function Header({ goBackFunction }) {
+export default function Header() {
   return (
     <Wrapper>
       <h1>

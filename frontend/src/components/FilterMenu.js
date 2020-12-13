@@ -1,5 +1,4 @@
 import styled from 'styled-components/macro'
-import closeSrc from '../assets/close.svg'
 import CloseButton from './CloseButton'
 import SlideInMenuDefault from './SlideInMenuDefault'
 
@@ -13,9 +12,6 @@ export default function FilterMenu({
 }) {
   const maxDistance = 600000
   const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))
-  const maxDurationMin = Math.max(
-    ...allTracks.map((track) => track.durationMin)
-  )
 
   const { distance, lengthM, roundtrip, certYear } = filterCriteria
 

@@ -64,6 +64,5 @@ export default function Map({
         ))}
     </GoogleMap>
   )
-  console.log(mapRef)
   return isLoaded ? map : null
 }

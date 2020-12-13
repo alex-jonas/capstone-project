@@ -1,4 +1,4 @@
-const { default: getFromApi } = require('./getFromApi')
+import getFromApi from './getFromApi'
 
 export default function getCoordsAndSearch(
   description,
