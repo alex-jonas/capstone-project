@@ -5,9 +5,10 @@ import wandergoldSrc from './../assets/wandergold.svg'
 import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
 import PropTypes from 'prop-types'
-import getFromApi from '../lib/getFromApi'
 import getGeolocationOfUser from '../lib/getGeolocationOfUser'
 import Loader from '../components/Loader'
+import getAutocompleteSuggestions from '../lib/getAutocompleteSuggestions'
+import getCoordsAndSearch from '../lib/getCoordsAndSearch'
 
 Start.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -34,7 +35,7 @@ export default function Start({ handleSubmit }) {
           <input
             onChange={(event) => {
               !suggestionList.length && setSuggestionList([{ loading: true }])
-              getSuggestions(event.target.value)
+              getAutocompleteSuggestions(event.target.value, setSuggestionList)
             }}
             onFocus={() => setIsSearchFocused(true)}
             type="text"
@@ -69,7 +70,11 @@ export default function Start({ handleSubmit }) {
                       )}
                       <li
                         onClick={() =>
-                          getCoordsAndSearch(description, googlePlaceId)
+                          getCoordsAndSearch(
+                            description,
+                            googlePlaceId,
+                            handleSubmit
+                          )
                         }
                         key={googlePlaceId}
                       >
@@ -85,43 +90,6 @@ export default function Start({ handleSubmit }) {
       </LocationSearch>
     </Wrapper>
   )
-
-  function getSuggestions(placeString) {
-    const place = placeString.trim()
-    if (place.length > 2) {
-      const path = `autocomplete/${place}`
-      getFromApi(path)
-        .then((response) => response.data.predictions)
-        .then((suggestions) =>
-          suggestions.map(({ description, place_id }) => ({
-            description: description,
-            googlePlaceId: place_id,
-          }))
-        )
-        .then((suggestions) => setSuggestionList(suggestions.slice(0, 4)))
-        .catch(() =>
-          setSuggestionList([{ description: 'Service nicht verfügbar' }])
-        )
-    } else {
-      setSuggestionList([])
-    }
-  }
-
-  function getCoordsAndSearch(description, googlePlaceId) {
-    const path = `geocode/${googlePlaceId}`
-    getFromApi(path)
-      .then((response) => response.data.results[0].geometry)
-      .then((geometry) => {
-        const searchObject = {
-          locationName: description,
-          googlePlaceId: googlePlaceId,
-          latitude: geometry.location.lat,
-          longitude: geometry.location.lng,
-          isReadyToSearch: true,
-        }
-        handleSubmit(searchObject)
-      })
-  }
 }
 
 const Wrapper = styled.div`
