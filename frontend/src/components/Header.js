@@ -1,12 +1,9 @@
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import wandergoldSrc from './../assets/wandergold.svg'
 
-export default function Header() {
-  const history = useHistory()
+export default function Header({ goBackFunction }) {
   return (
     <Wrapper>
-      <button onClick={() => history.goBack()}>Go back</button>
       <h1>
         <img src={wandergoldSrc} alt="wandergold" />
       </h1>

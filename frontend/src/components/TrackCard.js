@@ -15,7 +15,12 @@ TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
 }
 
-export default function TrackCard({ track, handleClick, detailedMode }) {
+export default function TrackCard({
+  track,
+  handleClick,
+  detailedMode,
+  setIsDetailMapActive,
+}) {
   const {
     id,
     difficulty,
@@ -50,10 +55,7 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
             <h2>{title}</h2>
           </>
         )}
-        <ImageHeading
-          imgUrl={'https://source.unsplash.com/500x300/?forest,lake'}
-          big={detailedMode}
-        >
+        <ImageHeading big={detailedMode}>
           {!detailedMode && <h2>{title}</h2>}
           <BookmarkButton>
             <img src={starSrc} alt={`Wanderung Nr. ${id} bookmarken`} />
@@ -68,7 +70,9 @@ export default function TrackCard({ track, handleClick, detailedMode }) {
 
                 <li className="one-column static-map"></li>
                 <li className="one-column static-map-menu">
-                  <MapMenuButton>Detailkarte</MapMenuButton>
+                  <MapMenuButton onClick={() => setIsDetailMapActive(true)}>
+                    Detailkarte
+                  </MapMenuButton>
                   <MapMenuButton>Tour merken</MapMenuButton>
                   <MapMenuButton
                     onClick={() => openExternalLink(googleRouteHref)}
@@ -159,19 +163,11 @@ const Wrapper = styled.section`
   display: grid;
   grid-template-rows: ${(props) => (props.detailedMode ? 'none' : '1fr 1fr')};
 
-  h3 {
-    text-transform: uppercase;
-    font-size: 0.8em;
-    font-weight: 400;
-    color: var(--secondary-color);
-    letter-spacing: 1px;
-  }
-
   h2 {
-    margin: ${(props) => (props.detailedMode ? '15px 0' : '0')};
     font-family: 'Kanit', sans-serif;
-    font-size: ${(props) => (props.detailedMode ? '1.7em' : '1.3em')};
     line-height: 1;
+    margin: ${(props) => (props.detailedMode ? '15px 0' : '0')};
+    font-size: ${(props) => (props.detailedMode ? '1.7em' : '1.3em')};
     color: ${(props) => (props.detailedMode ? '#3F4F2C' : '#fff')};
     text-align: ${(props) => (props.detailedMode ? 'left' : 'center')};
     text-shadow: ${(props) =>

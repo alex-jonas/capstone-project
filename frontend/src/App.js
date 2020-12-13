@@ -33,7 +33,7 @@ export default function App() {
             <Redirect to={`/details/${singleTrack.id}`} />
           ) : (
             <>
-              <Header />
+              <Header goBackFunction={setStartingPoint} />
               <Results
                 startingPoint={startingPoint}
                 setSingleTrack={setSingleTrack}
@@ -44,7 +44,7 @@ export default function App() {
 
         <Route path="/details/:urlId">
           <>
-            <Header />
+            <Header goBackFunction={setSingleTrack} />
             <Details track={singleTrack} setSingleTrack={setSingleTrack} />
           </>
         </Route>

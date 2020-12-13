@@ -4,16 +4,19 @@ import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
 import Map from '../components/Map'
 import TrackCard from '../components/TrackCard'
-import Footer from '../components/Footer'
 import { useParams } from 'react-router-dom'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
 import ResultGrid from '../components/ResultGrid'
+import SlideInMenuDefault from '../components/SlideInMenuDefault'
+import CloseButton from '../components/CloseButton'
 
 Details.propTypes = {
   track: PropTypes.object.isRequired,
 }
 
 export default function Details({ track, setSingleTrack }) {
+  const [isDetailMapActive, setIsDetailMapActive] = useState(false)
+
   let { urlId } = useParams()
 
   const lastPosition = getLastSavedPosition()
@@ -29,9 +32,20 @@ export default function Details({ track, setSingleTrack }) {
 
   return (
     <Wrapper>
-      <ResultGrid>
-        <TrackCard track={track} key={track.id} detailedMode />
-      </ResultGrid>
+      <DetailedMap active={isDetailMapActive}>
+        <CloseButton setStateFunction={setIsDetailMapActive} />
+        <Map kmlFile={track.kmlFile} singleMode></Map>
+      </DetailedMap>
+
+      {!isDetailMapActive && (
+        <ResultGrid>
+          <TrackCard
+            track={track}
+            detailedMode
+            setIsDetailMapActive={setIsDetailMapActive}
+          />
+        </ResultGrid>
+      )}
     </Wrapper>
   )
 }
@@ -42,4 +56,8 @@ const Wrapper = styled.main`
   overflow: scroll;
   position: relative;
   padding-top: 46px;
+`
+
+const DetailedMap = styled(SlideInMenuDefault)`
+  right: ${(props) => (props.active ? '0' : '100%')};
 `

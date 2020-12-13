@@ -17,7 +17,7 @@ export default function Map({
   const baseUrlKml = process.env.REACT_APP_BASE_URL_KML
   const containerStyle = {
     width: '100%',
-    height: singleMode ? '70vh' : '50vh',
+    height: singleMode ? '100vh' : '50vh',
   }
 
   const options = {

@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
 import closeSrc from '../assets/close.svg'
+import CloseButton from './CloseButton'
+import SlideInMenuDefault from './SlideInMenuDefault'
 
 export default function FilterMenu({
   setFilterCriteria,
@@ -31,30 +33,10 @@ export default function FilterMenu({
   const roundtripPresetValue = roundtrip ? roundtrip : false
   const certYearPresetValue = certYear ? certYear : false
 
-  function handleConfigChange(event) {
-    const property = event.target.name
-    const value =
-      property === 'roundtrip' ? event.target.checked : +event.target.value
-    setFilterCriteria({
-      ...filterCriteria,
-      [property]: value,
-    })
-  }
-
-  function handleCheckboxChange(event) {
-    const property = event.target.name
-    const value = event.target.checked
-    const newFilterCriteria = { ...filterCriteria, [property]: value }
-    !value && delete newFilterCriteria[property]
-    setFilterCriteria(newFilterCriteria)
-  }
-
   return (
     <Wrapper active={isFilterActive}>
       <h2>Finde deine perfekte Tour</h2>
-      <CloseButton type="button" onClick={() => setIsFilterActive(false)}>
-        <img src={closeSrc} alt="Schließen" />
-      </CloseButton>
+      <CloseButton setStateFunction={setIsFilterActive} />
       <Controls>
         <label>
           <span>Umkreis: {distanceKmPresetValue} km</span>
@@ -104,7 +86,7 @@ export default function FilterMenu({
         <p>Ergebnisse: {tracksNumber}</p>
         <button
           type="reset"
-          onClick={(event) => {
+          onClick={() => {
             setFilterCriteria({})
             setIsFilterActive(false)
           }}
@@ -114,24 +96,29 @@ export default function FilterMenu({
       </Controls>
     </Wrapper>
   )
+
+  function handleConfigChange(event) {
+    const property = event.target.name
+    const value =
+      property === 'roundtrip' ? event.target.checked : +event.target.value
+    setFilterCriteria({
+      ...filterCriteria,
+      [property]: value,
+    })
+  }
+
+  function handleCheckboxChange(event) {
+    const property = event.target.name
+    const value = event.target.checked
+    const newFilterCriteria = { ...filterCriteria, [property]: value }
+    !value && delete newFilterCriteria[property]
+    setFilterCriteria(newFilterCriteria)
+  }
 }
 
-const Wrapper = styled.div`
-  background: linear-gradient(
-    180deg,
-    rgba(66, 99, 26, 1) 0%,
-    rgba(62, 97, 19, 1) 100%
-  );
-  height: 100vh;
-  width: 100%;
-  top: 0;
+const Wrapper = styled(SlideInMenuDefault)`
   right: ${(props) => (props.active ? '0' : '100%')};
-  z-index: 300;
-  position: absolute;
   padding: 12%;
-  font-size: 1em;
-  color: #eeeeee;
-  transition: right 0.2s ease-out;
 
   h2 {
     font-family: 'Kanit', sans-serif;
@@ -150,11 +137,4 @@ const Controls = styled.form`
   input {
     width: 100%;
   }
-`
-const CloseButton = styled.button`
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  border: none;
-  background: none;
 `

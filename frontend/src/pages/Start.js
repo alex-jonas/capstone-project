@@ -100,9 +100,7 @@ export default function Start({ handleSubmit }) {
         )
         .then((suggestions) => setSuggestionList(suggestions.slice(0, 4)))
         .catch(() =>
-          setSuggestionList([
-            { description: 'Service nicht verfügbar', googlePlaceId: 'error' },
-          ])
+          setSuggestionList([{ description: 'Service nicht verfügbar' }])
         )
     } else {
       setSuggestionList([])

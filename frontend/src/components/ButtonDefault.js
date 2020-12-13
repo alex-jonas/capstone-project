@@ -10,7 +10,7 @@ export default styled.button`
   letter-spacing: 0.1em;
 
   &:active {
-    background-color: black;
+    background-color: #2f4218;
   }
 
   strong {
