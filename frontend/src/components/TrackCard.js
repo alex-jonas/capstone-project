@@ -13,13 +13,21 @@ import saveToBookmarks from '../lib/saveToBookmarks'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  detailedMode: PropTypes.bool,
+  setIsDetailMapActive: PropTypes.func.isRequired,
 }
 
+/**
+ * Central component for showing track data
+ */
 export default function TrackCard({
   track,
   handleClick,
   detailedMode,
   setIsDetailMapActive,
+  bookmarks,
+  setBookmarks,
 }) {
   const {
     id,
@@ -44,6 +52,11 @@ export default function TrackCard({
   const staticMapImgSrc = `https://maps.googleapis.com/maps/api/staticmap?center=${firstLat},${firstLon}&zoom=10&size=400x200&key=${apiKey}&maptype=terrain&scale=2&markers=color:0x4C6A28|${firstLat},${firstLon}`
   const googleRouteHref = `https://google.com/maps/?daddr=${firstLat},${firstLon}`
 
+  const bookmarkIndexInArray = bookmarks?.findIndex(
+    (bookmark) => bookmark.id === id
+  )
+  const isBookmarked = bookmarkIndexInArray > -1
+
   return (
     <>
       <Wrapper
@@ -67,14 +80,27 @@ export default function TrackCard({
             {detailedMode && (
               <>
                 <li className="one-column description">{description}</li>
-
                 <li className="one-column static-map"></li>
                 <li className="one-column static-map-menu">
                   <MapMenuButton onClick={() => setIsDetailMapActive(true)}>
                     Detailkarte
                   </MapMenuButton>
-                  <MapMenuButton onClick={() => saveToBookmarks(id)}>
-                    Tour merken
+                  <MapMenuButton
+                    onClick={() => {
+                      !isBookmarked &&
+                        setBookmarks([
+                          ...bookmarks,
+                          { id: id, date: new Date() },
+                        ])
+
+                      isBookmarked &&
+                        setBookmarks([
+                          ...bookmarks.slice(0, bookmarkIndexInArray),
+                          ...bookmarks.slice(bookmarkIndexInArray + 1),
+                        ])
+                    }}
+                  >
+                    {!isBookmarked ? 'Like' : 'Unlike'}
                   </MapMenuButton>
                   <MapMenuButton
                     onClick={() => openExternalLink(googleRouteHref)}
@@ -262,4 +288,5 @@ const TrackFacts = styled.section`
 const MapMenuButton = styled(ButtonDefault)`
   font-size: 0.8em;
   color: #fff;
+  white-space: nowrap;
 `

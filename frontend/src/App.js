@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import Header from './components/Header'
+import getBookmarks from './lib/getBookmarks'
 import Details from './pages/Details'
 import Results from './pages/Results'
 import Start from './pages/Start'
@@ -16,6 +17,10 @@ export default function App() {
   })
 
   const [singleTrack, setSingleTrack] = useState({})
+  const [bookmarks, setBookmarks] = useState(getBookmarks || [])
+  useEffect(() => {
+    localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
+  }, [bookmarks])
 
   return (
     <PageLayout>
@@ -33,10 +38,12 @@ export default function App() {
             <Redirect to={`/details/${singleTrack.id}`} />
           ) : (
             <>
-              <Header goBackFunction={setStartingPoint} />
+              <Header />
               <Results
                 startingPoint={startingPoint}
                 setSingleTrack={setSingleTrack}
+                bookmarks={bookmarks}
+                setBookmarks={setBookmarks}
               />
             </>
           )}
@@ -44,8 +51,13 @@ export default function App() {
 
         <Route path="/details/:urlId">
           <>
-            <Header goBackFunction={setSingleTrack} />
-            <Details track={singleTrack} setSingleTrack={setSingleTrack} />
+            <Header />
+            <Details
+              track={singleTrack}
+              setSingleTrack={setSingleTrack}
+              bookmarks={bookmarks}
+              setBookmarks={setBookmarks}
+            />
           </>
         </Route>
       </Switch>
