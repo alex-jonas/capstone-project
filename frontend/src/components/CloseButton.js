@@ -1,4 +1,5 @@
 import styled from 'styled-components/macro'
+
 export default function CloseButton({
   setStateFunction,
   color = '#7b7b7b',

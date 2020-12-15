@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Redirect, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import Header from './components/Header'
 import getBookmarks from './lib/getBookmarks'
@@ -38,7 +38,7 @@ export default function App() {
             <Redirect to={`/details/${singleTrack.id}`} />
           ) : (
             <>
-              <Header />
+              <Header goBackFunction={setStartingPoint} redirectToPath="/" />
               <Results
                 startingPoint={startingPoint}
                 setSingleTrack={setSingleTrack}
@@ -51,7 +51,7 @@ export default function App() {
 
         <Route path="/details/:urlId">
           <>
-            <Header />
+            <Header goBackFunction={setSingleTrack} redirectToPath="/results" />
             <Details
               track={singleTrack}
               setSingleTrack={setSingleTrack}

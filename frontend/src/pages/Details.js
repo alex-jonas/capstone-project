@@ -1,16 +1,14 @@
-import { useState } from 'react'
-import styled from 'styled-components/macro'
-import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
-import Map from '../components/Map'
-import TrackCard from '../components/TrackCard'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import getLastSavedPosition from '../lib/getLastSavedPosition'
+import styled from 'styled-components/macro'
+import CloseButton from '../components/CloseButton'
+import Map from '../components/Map'
 import ResultGrid from '../components/ResultGrid'
 import SlideInMenuDefault from '../components/SlideInMenuDefault'
-import CloseButton from '../components/CloseButton'
-import getBookmarks from '../lib/getBookmarks'
-import deleteFromBookmarks from '../lib/deleteFromBookmarks'
+import TrackCard from '../components/TrackCard'
+import getFromApi from '../lib/getFromApi'
+import getLastSavedPosition from '../lib/getLastSavedPosition'
 
 Details.propTypes = {
   track: PropTypes.object.isRequired,

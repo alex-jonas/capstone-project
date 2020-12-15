@@ -1,14 +1,14 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 import styled from 'styled-components/macro'
-import startscreenJpg from './../assets/startscreen.jpg'
-import wandergoldSrc from './../assets/wandergold.svg'
-import closeSrc from './../assets/close.svg'
-import compassSrc from './../assets/compass.svg'
-import PropTypes from 'prop-types'
-import getGeolocationOfUser from '../lib/getGeolocationOfUser'
 import Loader from '../components/Loader'
 import getAutocompleteSuggestions from '../lib/getAutocompleteSuggestions'
 import getCoordsAndSearch from '../lib/getCoordsAndSearch'
+import getGeolocationOfUser from '../lib/getGeolocationOfUser'
+import closeSrc from './../assets/close.svg'
+import compassSrc from './../assets/compass.svg'
+import startscreenJpg from './../assets/startscreen.jpg'
+import wandergoldSrc from './../assets/wandergold.svg'
 
 Start.propTypes = {
   handleSubmit: PropTypes.func.isRequired,

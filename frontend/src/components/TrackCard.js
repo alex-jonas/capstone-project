@@ -87,17 +87,14 @@ export default function TrackCard({
                   </MapMenuButton>
                   <MapMenuButton
                     onClick={() => {
-                      !isBookmarked &&
-                        setBookmarks([
-                          ...bookmarks,
-                          { id: id, date: new Date() },
-                        ])
-
-                      isBookmarked &&
-                        setBookmarks([
-                          ...bookmarks.slice(0, bookmarkIndexInArray),
-                          ...bookmarks.slice(bookmarkIndexInArray + 1),
-                        ])
+                      setBookmarks(
+                        !isBookmarked
+                          ? [...bookmarks, { id: id, date: new Date() }]
+                          : [
+                              ...bookmarks.slice(0, bookmarkIndexInArray),
+                              ...bookmarks.slice(bookmarkIndexInArray + 1),
+                            ]
+                      )
                     }}
                   >
                     {!isBookmarked ? 'Like' : 'Unlike'}

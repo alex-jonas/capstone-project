@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react'
-import styled from 'styled-components/macro'
 import PropTypes from 'prop-types'
-import Map from '../components/Map'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components/macro'
 import controlsSrc from '../assets/controls.svg'
+import ButtonDefault from '../components/ButtonDefault'
 import FilterMenu from '../components/FilterMenu'
+import Map from '../components/Map'
+import ResultGrid from '../components/ResultGrid'
 import TrackCard from '../components/TrackCard'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
-import ButtonDefault from '../components/ButtonDefault'
-import ResultGrid from '../components/ResultGrid'
 import updateCenter from '../lib/updateCenter'
 
 Results.propTypes = {
