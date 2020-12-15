@@ -10,10 +10,6 @@ import compassSrc from './../assets/compass.svg'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSrc from './../assets/wandergold.svg'
 
-Start.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-}
-
 export default function Start({ handleSubmit }) {
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [suggestionList, setSuggestionList] = useState([])
@@ -210,3 +206,6 @@ const SearchSuggestions = styled.div`
     }
   }
 `
+Start.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+}

@@ -10,10 +10,6 @@ import TrackCard from '../components/TrackCard'
 import getFromApi from '../lib/getFromApi'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
 
-Details.propTypes = {
-  track: PropTypes.object.isRequired,
-}
-
 export default function Details({
   track,
   setSingleTrack,
@@ -67,3 +63,6 @@ const Wrapper = styled.main`
 const DetailedMap = styled(SlideInMenuDefault)`
   right: ${(props) => (props.active ? '0' : '100%')};
 `
+Details.propTypes = {
+  track: PropTypes.object.isRequired,
+}

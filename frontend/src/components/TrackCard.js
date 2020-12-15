@@ -11,13 +11,6 @@ import ButtonDefault from './ButtonDefault'
 import TourTags from './TourTags'
 import WayTypesBar from './WayTypesBar'
 
-TrackCard.propTypes = {
-  track: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  detailedMode: PropTypes.bool,
-  setIsDetailMapActive: PropTypes.func.isRequired,
-}
-
 /**
  * Central component for showing track data
  */
@@ -56,15 +49,6 @@ export default function TrackCard({
     (bookmark) => bookmark.id === id
   )
   const isBookmarked = bookmarkIndexInArray > -1
-
-  function toggleBookmarkArray() {
-    return !isBookmarked
-      ? [...bookmarks, { id: id, date: new Date() }]
-      : [
-          ...bookmarks.slice(0, bookmarkIndexInArray),
-          ...bookmarks.slice(bookmarkIndexInArray + 1),
-        ]
-  }
 
   return (
     <>
@@ -191,6 +175,15 @@ export default function TrackCard({
       </Wrapper>
     </>
   )
+
+  function toggleBookmarkArray() {
+    return !isBookmarked
+      ? [...bookmarks, { id: id, date: new Date() }]
+      : [
+          ...bookmarks.slice(0, bookmarkIndexInArray),
+          ...bookmarks.slice(bookmarkIndexInArray + 1),
+        ]
+  }
 }
 
 const Wrapper = styled.section`
@@ -300,3 +293,10 @@ const MapMenuButton = styled(ButtonDefault)`
   color: #fff;
   white-space: nowrap;
 `
+
+TrackCard.propTypes = {
+  track: PropTypes.object.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  detailedMode: PropTypes.bool,
+  setIsDetailMapActive: PropTypes.func.isRequired,
+}

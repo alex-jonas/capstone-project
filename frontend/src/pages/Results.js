@@ -10,10 +10,6 @@ import TrackCard from '../components/TrackCard'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
 import updateCenter from '../lib/updateCenter'
 
-Results.propTypes = {
-  startingPoint: PropTypes.object.isRequired,
-}
-
 export default function Results({
   startingPoint,
   setSingleTrack,
@@ -157,3 +153,7 @@ const FilterButton = styled(ButtonDefault)`
     background-position-x: left;
   }
 `
+
+Results.propTypes = {
+  startingPoint: PropTypes.object.isRequired,
+}
