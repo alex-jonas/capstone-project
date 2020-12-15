@@ -28,3 +28,4 @@ cypress/support
 cypress/fixtures
 cypress/videos
 cypress/plugins
+cypress/integration/examples
