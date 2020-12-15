@@ -1,15 +1,15 @@
-import styled from 'styled-components/macro'
-import starSrc from '../assets/star.svg'
-import premiumSrc from '../assets/premium.svg'
-import getDifficultyName from '../lib/getDifficultyName'
-import getHoursFromMinutes from '../lib/getHoursFromMinutes'
 import PropTypes from 'prop-types'
+import styled from 'styled-components/macro'
+import premiumSrc from '../assets/premium.svg'
+import starSrc from '../assets/star.svg'
+import starActiveSrc from '../assets/star_active.svg'
+import getDifficultyName from '../lib/getDifficultyName'
 import getFormattedDate from '../lib/getFormattedDate'
-import WayTypesBar from './WayTypesBar'
-import TourTags from './TourTags'
-import ButtonDefault from './ButtonDefault'
+import getHoursFromMinutes from '../lib/getHoursFromMinutes'
 import openExternalLink from '../lib/openExternalLink'
-import saveToBookmarks from '../lib/saveToBookmarks'
+import ButtonDefault from './ButtonDefault'
+import TourTags from './TourTags'
+import WayTypesBar from './WayTypesBar'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
@@ -57,6 +57,15 @@ export default function TrackCard({
   )
   const isBookmarked = bookmarkIndexInArray > -1
 
+  function toggleBookmarkArray() {
+    return !isBookmarked
+      ? [...bookmarks, { id: id, date: new Date() }]
+      : [
+          ...bookmarks.slice(0, bookmarkIndexInArray),
+          ...bookmarks.slice(bookmarkIndexInArray + 1),
+        ]
+  }
+
   return (
     <>
       <Wrapper
@@ -70,8 +79,16 @@ export default function TrackCard({
         )}
         <ImageHeading big={detailedMode}>
           {!detailedMode && <h2>{title}</h2>}
-          <BookmarkButton>
-            <img src={starSrc} alt={`Wanderung Nr. ${id} bookmarken`} />
+          <BookmarkButton
+            onClick={() => {
+              setBookmarks(toggleBookmarkArray())
+            }}
+          >
+            {isBookmarked ? (
+              <img src={starActiveSrc} alt={`Bookmark entfernen`} />
+            ) : (
+              <img src={starSrc} alt={`Bookmark setzen`} />
+            )}
           </BookmarkButton>
         </ImageHeading>
 
@@ -80,21 +97,17 @@ export default function TrackCard({
             {detailedMode && (
               <>
                 <li className="one-column description">{description}</li>
-                <li className="one-column static-map"></li>
+                <li
+                  className="one-column static-map"
+                  onClick={() => setIsDetailMapActive(true)}
+                ></li>
                 <li className="one-column static-map-menu">
                   <MapMenuButton onClick={() => setIsDetailMapActive(true)}>
-                    Detailkarte
+                    Wanderkarte
                   </MapMenuButton>
                   <MapMenuButton
                     onClick={() => {
-                      setBookmarks(
-                        !isBookmarked
-                          ? [...bookmarks, { id: id, date: new Date() }]
-                          : [
-                              ...bookmarks.slice(0, bookmarkIndexInArray),
-                              ...bookmarks.slice(bookmarkIndexInArray + 1),
-                            ]
-                      )
+                      setBookmarks(toggleBookmarkArray())
                     }}
                   >
                     {!isBookmarked ? 'Like' : 'Unlike'}

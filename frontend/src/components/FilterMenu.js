@@ -9,6 +9,7 @@ export default function FilterMenu({
   allTracks,
   isFilterActive,
   tracksNumber,
+  bookmarkIds,
 }) {
   const maxDistance = 600000
   const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))

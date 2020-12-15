@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import Header from './components/Header'
 import getBookmarks from './lib/getBookmarks'
+import storeBookmarks from './lib/storeBookmarks'
 import Details from './pages/Details'
 import Results from './pages/Results'
 import Start from './pages/Start'
@@ -18,8 +19,9 @@ export default function App() {
 
   const [singleTrack, setSingleTrack] = useState({})
   const [bookmarks, setBookmarks] = useState(getBookmarks || [])
+
   useEffect(() => {
-    localStorage.setItem('bookmarks', JSON.stringify(bookmarks))
+    storeBookmarks(bookmarks)
   }, [bookmarks])
 
   return (

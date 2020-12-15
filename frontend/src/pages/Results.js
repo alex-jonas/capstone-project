@@ -14,7 +14,12 @@ Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
 }
 
-export default function Results({ startingPoint, setSingleTrack }) {
+export default function Results({
+  startingPoint,
+  setSingleTrack,
+  bookmarks,
+  setBookmarks,
+}) {
   const lastSearchedPosition = getLastSavedPosition()
   const [filterCriteria, setFilterCriteria] = useState({
     distance: 300000,
@@ -26,6 +31,8 @@ export default function Results({ startingPoint, setSingleTrack }) {
     lng: startingPoint?.longitude || lastSearchedPosition.lng,
   })
   const [isFilterActive, setIsFilterActive] = useState(false)
+
+  const bookmarkIds = bookmarks.length > 0 ? bookmarks.map(({ id }) => id) : []
 
   useEffect(() => {
     updateCenter(centerCoords)
@@ -85,6 +92,7 @@ export default function Results({ startingPoint, setSingleTrack }) {
         allTracks={tracks}
         isFilterActive={isFilterActive}
         tracksNumber={filteredTracks.length}
+        bookmarkIds={bookmarkIds}
       />
 
       {!isFilterActive && (
@@ -95,6 +103,8 @@ export default function Results({ startingPoint, setSingleTrack }) {
               key={track.id}
               handleClick={setSingleTrack}
               detailedMode={false}
+              bookmarks={bookmarks}
+              setBookmarks={setBookmarks}
             />
           ))}
         </ResultGrid>
@@ -109,6 +119,7 @@ const Wrapper = styled.main`
   overflow: scroll;
   position: relative;
   padding-top: 46px;
+  user-select: none;
 `
 
 const FilterBar = styled.section`
