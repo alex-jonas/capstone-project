@@ -212,10 +212,11 @@ const BookmarkButton = styled.button`
   border: 0;
   background-color: transparent;
 `
-
 const ImageHeading = styled.section`
   display: grid;
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+  background: ${(props) =>
+      !props.big &&
+      'linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),'}
     url(${(props) => props.photoSrc});
   background-attachment: fixed;
   background-size: cover;
