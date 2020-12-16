@@ -47,7 +47,7 @@ const Wrapper = styled.header`
     font-size: 1em;
     line-height: 1;
     margin: 0;
-    margin-top: 9px;
+    margin-top: 3px;
   }
 
   img {

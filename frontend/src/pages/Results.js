@@ -32,9 +32,20 @@ export default function Results({
 
   useEffect(() => {
     updateCenter(centerCoords)
-      .then(({ data }) => setTracks(data))
+      .then(({ data }) => data)
+      .then((tracks) =>
+        tracks.map((track) => {
+          const bookmarkForTrack = bookmarks.find(
+            (bookmark) => bookmark.id === track.id
+          )
+          return bookmarkForTrack
+            ? { ...track, bookmarked: bookmarkForTrack.date }
+            : track
+        })
+      )
+      .then((tracksWithBookmarks) => setTracks(tracksWithBookmarks))
       .catch((error) => console.error('Error:', error))
-  }, [centerCoords])
+  }, [centerCoords, bookmarks])
 
   const filteredTracks = tracks.filter((track) => {
     for (const key in filterCriteria) {
@@ -50,7 +61,7 @@ export default function Results({
       } else if (key === 'difficulty' && track[key] !== filterCriteria[key]) {
         return false
       } else if (
-        key === 'certYear' &&
+        (key === 'certYear' || key === 'bookmarked') &&
         Boolean(track[key]) !== filterCriteria[key]
       ) {
         return false

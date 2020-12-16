@@ -9,7 +9,6 @@ export default function FilterMenu({
   allTracks,
   isFilterActive,
   tracksNumber,
-  bookmarkIds,
 }) {
   const maxDistance = 600000
   const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))
@@ -88,7 +87,7 @@ export default function FilterMenu({
           <span>Nur Bookmarks: </span>
           <input
             type="checkbox"
-            name="certYear"
+            name="bookmarked"
             defaultChecked={certYearPresetValue}
             onChange={handleCheckboxChange}
           />
