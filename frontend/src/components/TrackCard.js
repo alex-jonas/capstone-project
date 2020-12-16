@@ -42,6 +42,7 @@ export default function TrackCard({
   } = track
 
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
+  const trackPhotoSrc = process.env.REACT_APP_BASE_URL_IMAGE + id + '.jpg'
 
   const staticMapImgSrc = `https://maps.googleapis.com/maps/api/staticmap?center=${firstLat},${firstLon}&zoom=10&size=400x200&key=${apiKey}&maptype=terrain&scale=2&markers=color:0x4C6A28|${firstLat},${firstLon}`
   const googleRouteHref = `https://google.com/maps/?daddr=${firstLat},${firstLon}`
@@ -59,21 +60,14 @@ export default function TrackCard({
             <h2>{title}</h2>
           </>
         )}
-        <ImageHeading big={detailedMode}>
+        <ImageHeading big={detailedMode} photoSrc={trackPhotoSrc}>
           {!detailedMode && <h2 onClick={() => handleClick(track)}>{title}</h2>}
           <BookmarkButton
             onClick={() => {
               setBookmarks(toggleBookmarkArray())
             }}
           >
-            {
-              <StarButton active={isBookmarked} />
-              /*isBookmarked ? (
-              <img src={starActiveSrc} alt={`Bookmark entfernen`} />
-            ) : (
-              <img src={starSrc} alt={`Bookmark setzen`} />
-            )*/
-            }
+            <StarButton active={isBookmarked} />
           </BookmarkButton>
         </ImageHeading>
 
@@ -221,7 +215,8 @@ const BookmarkButton = styled.button`
 
 const ImageHeading = styled.section`
   display: grid;
-  background: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80');
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
+    url(${(props) => props.photoSrc});
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
