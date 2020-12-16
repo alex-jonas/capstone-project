@@ -7,6 +7,7 @@ import FilterMenu from '../components/FilterMenu'
 import Map from '../components/Map'
 import ResultGrid from '../components/ResultGrid'
 import TrackCard from '../components/TrackCard'
+import getBooleanFilterResult from '../lib/getBooleanFilterResult'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
 import updateCenter from '../lib/updateCenter'
 
@@ -28,8 +29,6 @@ export default function Results({
   })
   const [isFilterActive, setIsFilterActive] = useState(false)
 
-  const bookmarkIds = bookmarks.length > 0 ? bookmarks.map(({ id }) => id) : []
-
   useEffect(() => {
     updateCenter(centerCoords)
       .then(({ data }) => data)
@@ -47,28 +46,9 @@ export default function Results({
       .catch((error) => console.error('Error:', error))
   }, [centerCoords, bookmarks])
 
-  const filteredTracks = tracks.filter((track) => {
-    for (const key in filterCriteria) {
-      if (track[key] === undefined) {
-        return false
-      } else if (
-        (key === 'distance' || key === 'lengthM') &&
-        track[key] > filterCriteria[key]
-      ) {
-        return false
-      } else if (key === 'roundtrip' && track[key] !== filterCriteria[key]) {
-        return false
-      } else if (key === 'difficulty' && track[key] !== filterCriteria[key]) {
-        return false
-      } else if (
-        (key === 'certYear' || key === 'bookmarked') &&
-        Boolean(track[key]) !== filterCriteria[key]
-      ) {
-        return false
-      }
-    }
-    return true
-  })
+  const filteredTracks = tracks.filter((track) =>
+    getBooleanFilterResult(track, filterCriteria)
+  )
 
   return (
     <Wrapper>
@@ -99,7 +79,6 @@ export default function Results({
         allTracks={tracks}
         isFilterActive={isFilterActive}
         tracksNumber={filteredTracks.length}
-        bookmarkIds={bookmarkIds}
       />
 
       {!isFilterActive && (

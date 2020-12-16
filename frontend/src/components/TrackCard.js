@@ -8,6 +8,7 @@ import getFormattedDate from '../lib/getFormattedDate'
 import getHoursFromMinutes from '../lib/getHoursFromMinutes'
 import openExternalLink from '../lib/openExternalLink'
 import ButtonDefault from './ButtonDefault'
+import StarButton from './StarButton'
 import TourTags from './TourTags'
 import WayTypesBar from './WayTypesBar'
 
@@ -52,31 +53,34 @@ export default function TrackCard({
 
   return (
     <>
-      <Wrapper
-        onClick={() => (!detailedMode ? handleClick(track) : false)}
-        detailedMode={detailedMode}
-      >
+      <Wrapper detailedMode={detailedMode}>
         {detailedMode && (
           <>
             <h2>{title}</h2>
           </>
         )}
         <ImageHeading big={detailedMode}>
-          {!detailedMode && <h2>{title}</h2>}
+          {!detailedMode && <h2 onClick={() => handleClick(track)}>{title}</h2>}
           <BookmarkButton
             onClick={() => {
               setBookmarks(toggleBookmarkArray())
             }}
           >
-            {isBookmarked ? (
+            {
+              <StarButton active={isBookmarked} />
+              /*isBookmarked ? (
               <img src={starActiveSrc} alt={`Bookmark entfernen`} />
             ) : (
               <img src={starSrc} alt={`Bookmark setzen`} />
-            )}
+            )*/
+            }
           </BookmarkButton>
         </ImageHeading>
 
-        <TrackFacts staticMapUrl={staticMapImgSrc}>
+        <TrackFacts
+          staticMapUrl={staticMapImgSrc}
+          onClick={() => (!detailedMode ? handleClick(track) : false)}
+        >
           <ul>
             {detailedMode && (
               <>
@@ -254,6 +258,7 @@ const TrackFacts = styled.section`
 
     li.premium {
       position: absolute;
+      display: none;
       top: 0;
       right: 0;
       border: none;

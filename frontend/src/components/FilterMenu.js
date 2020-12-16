@@ -9,11 +9,12 @@ export default function FilterMenu({
   allTracks,
   isFilterActive,
   tracksNumber,
+  bookmarkIds,
 }) {
   const maxDistance = 600000
   const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))
 
-  const { distance, lengthM, roundtrip, certYear } = filterCriteria
+  const { distance, lengthM, roundtrip, certYear, bookmarked } = filterCriteria
 
   const distanceStep = 10
   const distanceKm = distance / 1000
@@ -28,6 +29,7 @@ export default function FilterMenu({
 
   const roundtripPresetValue = roundtrip ? roundtrip : false
   const certYearPresetValue = certYear ? certYear : false
+  const bookmarkedPresetValue = bookmarked ? bookmarked : false
 
   return (
     <Wrapper active={isFilterActive}>
@@ -88,7 +90,7 @@ export default function FilterMenu({
           <input
             type="checkbox"
             name="bookmarked"
-            defaultChecked={certYearPresetValue}
+            defaultChecked={bookmarkedPresetValue}
             onChange={handleCheckboxChange}
           />
         </label>
