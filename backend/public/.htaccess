@@ -1,16 +1,15 @@
+## Uberspace
+RewriteBase /
 # Based on http://stackoverflow.com/questions/17313023/symfony-2-2-1-url-rewrite-issue
 # Modified to use index.php as per symfony >= 4.0 installer
-
 # Use the front controller as index file. It serves as fallback solution when
 # every other rewrite/redirect fails (e.g. in an aliased environment without
 # mod_rewrite). Additionally, this reduces the matching process for the
 # startpage (path "/") because otherwise Apache will apply the rewritting rules
 # to each configured DirectoryIndex file (e.g. index.php, index.html, index.pl).
 DirectoryIndex index.php
-
 <IfModule mod_rewrite.c>
     RewriteEngine On
-
     # Redirect to URI without front controller to prevent duplicate content
     # (with and without `/index.php`). Only do this redirect on the initial
     # rewrite by Apache and not on subsequent cycles. Otherwise we would get an
@@ -24,12 +23,10 @@ DirectoryIndex index.php
     #   following RewriteCond (best solution)
     RewriteCond %{ENV:REDIRECT_STATUS} ^$
     RewriteRule ^index\.php(/(.*)|$) %{CONTEXT_PREFIX}/$2 [R=301,L]
-
     # If the requested filename exists, simply serve it.
     # We only want to let Apache serve files and not directories.
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule .? - [L]
-
     # cache-bust assets url rewrite
     # Example format: /cpv-10/js/test123.js -> /js/test123.js
     # This allows us to change the asset version and "bust" intermediate caches (like varnish)
@@ -38,10 +35,8 @@ DirectoryIndex index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^cpv-\d+\/(.+)$ $1 [L]
-
     RewriteCond %{REQUEST_FILENAME} -f
     RewriteRule ^(.*)$ index.php [QSA,L]
-
     # The following rewrites all other queries to the front controller. The
     # condition ensures that if you are using Apache aliases to do mass virtual
     # hosting, the base path will be prepended to allow proper resolution of the
@@ -51,7 +46,6 @@ DirectoryIndex index.php
     RewriteRule ^(.*) - [E=BASE:%1]
     RewriteRule .? %{ENV:BASE}index.php [L]
 </IfModule>
-
 <IfModule !mod_rewrite.c>
     <IfModule mod_alias.c>
         # When mod_rewrite is not available, we instruct a temporary redirect of
