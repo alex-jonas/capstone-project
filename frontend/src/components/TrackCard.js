@@ -3,14 +3,23 @@ import starSrc from '../assets/star.svg'
 import premiumSrc from '../assets/premium.svg'
 import getDifficultyName from '../lib/getDifficultyName'
 import getHoursFromMinutes from '../lib/getHoursFromMinutes'
-import getTagName from '../lib/getTagName'
 import PropTypes from 'prop-types'
+import getFormattedDate from '../lib/getFormattedDate'
+import WayTypesBar from './WayTypesBar'
+import TourTags from './TourTags'
+import ButtonDefault from './ButtonDefault'
+import openExternalLink from '../lib/openExternalLink'
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
 }
 
-export default function TrackCard({ track }) {
+export default function TrackCard({
+  track,
+  handleClick,
+  detailedMode,
+  setIsDetailMapActive,
+}) {
   const {
     id,
     difficulty,
@@ -21,28 +30,65 @@ export default function TrackCard({ track }) {
     durationMin,
     description,
     tags,
+    dateCreated,
+    surface,
+    elevation,
+    region,
+    firstLat,
+    firstLon,
   } = track
+
+  const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
+
+  const staticMapImgSrc = `https://maps.googleapis.com/maps/api/staticmap?center=${firstLat},${firstLon}&zoom=10&size=400x200&key=${apiKey}&maptype=terrain&scale=2&markers=color:0x4C6A28|${firstLat},${firstLon}`
+  const googleRouteHref = `https://google.com/maps/?daddr=${firstLat},${firstLon}`
 
   return (
     <>
-      <Wrapper>
-        <ImageHeading
-          imgUrl={'https://source.unsplash.com/500x300/?forest,lake'}
-        >
+      <Wrapper
+        onClick={() => (!detailedMode ? handleClick(track) : false)}
+        detailedMode={detailedMode}
+      >
+        {detailedMode && (
+          <>
+            <h2>{title}</h2>
+          </>
+        )}
+        <ImageHeading big={detailedMode}>
+          {!detailedMode && <h2>{title}</h2>}
           <BookmarkButton>
             <img src={starSrc} alt={`Wanderung Nr. ${id} bookmarken`} />
           </BookmarkButton>
-          <h2>{title}</h2>
         </ImageHeading>
-        <TrackFacts>
+
+        <TrackFacts staticMapUrl={staticMapImgSrc}>
           <ul>
+            {detailedMode && (
+              <>
+                <li className="one-column description">{description}</li>
+
+                <li className="one-column static-map"></li>
+                <li className="one-column static-map-menu">
+                  <MapMenuButton onClick={() => setIsDetailMapActive(true)}>
+                    Detailkarte
+                  </MapMenuButton>
+                  <MapMenuButton>Tour merken</MapMenuButton>
+                  <MapMenuButton
+                    onClick={() => openExternalLink(googleRouteHref)}
+                  >
+                    Anfahrt
+                  </MapMenuButton>
+                </li>
+              </>
+            )}
+
             <li>
               <strong>Länge: </strong>
               {Math.round(lengthM / 100) / 10 + ' km'}
             </li>
             <li>
               <strong>Dauer: </strong>
-              {'etwa ' +
+              {'ca. ' +
                 getHoursFromMinutes({
                   minutes: durationMin,
                   length: lengthM,
@@ -50,8 +96,8 @@ export default function TrackCard({ track }) {
                 ' Std'}
             </li>
             <li>
-              <strong>Entfernung: </strong>{' '}
-              {Math.round(distance / 1000) + ' km'}
+              <strong>Entfernung: </strong>
+              {distance ? Math.round(distance / 1000) + ' km' : '-'}
             </li>
             <li>
               <strong>Anspruch: </strong>
@@ -62,15 +108,45 @@ export default function TrackCard({ track }) {
                 <img src={premiumSrc} alt="Premiumweg" />
               </li>
             )}
+
+            {detailedMode && (
+              <>
+                <li className="one-column">
+                  <strong>Region:</strong>
+                  {region}
+                </li>
+                {certYear && (
+                  <li className="one-column">
+                    <strong>Premiumweg seit:</strong>
+                    {certYear}
+                  </li>
+                )}
+
+                {elevation && (
+                  <li className="one-column">
+                    <strong>Höhenunterschied: </strong> {elevation} m
+                  </li>
+                )}
+
+                {surface && (
+                  <li className="one-column">
+                    <strong>Wegbeschaffenheit</strong>
+                    <WayTypesBar surfaceValues={surface} />
+                  </li>
+                )}
+              </>
+            )}
+
             <li className="one-column">
               <strong>Tour Tags: </strong>
-              {tags
-                .sort(() => Math.random() - 0.5)
-                .map((tag) => (
-                  <span key={tag}>{getTagName(tag)}</span>
-                ))}
+              <TourTags tagIds={tags} />
             </li>
-            <li className="one-column">{description}</li>
+            {detailedMode && (
+              <li className="one-column">
+                <strong>Stand:</strong>
+                {getFormattedDate(dateCreated)}
+              </li>
+            )}
           </ul>
         </TrackFacts>
       </Wrapper>
@@ -84,7 +160,18 @@ const Wrapper = styled.section`
   box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
   background: #fff;
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: ${(props) => (props.detailedMode ? 'none' : '1fr 1fr')};
+
+  h2 {
+    font-family: 'Kanit', sans-serif;
+    line-height: 1;
+    margin: ${(props) => (props.detailedMode ? '15px 0' : '0')};
+    font-size: ${(props) => (props.detailedMode ? '1.7em' : '1.3em')};
+    color: ${(props) => (props.detailedMode ? '#3F4F2C' : '#fff')};
+    text-align: ${(props) => (props.detailedMode ? 'left' : 'center')};
+    text-shadow: ${(props) =>
+      props.detailedMode ? 'none' : '0px 0px 9px rgba(0, 0, 0, 0.8)'};
+  }
 `
 
 const BookmarkButton = styled.button`
@@ -99,7 +186,6 @@ const BookmarkButton = styled.button`
 const ImageHeading = styled.section`
   display: grid;
   background: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80');
-  xbackground: url(${(props) => props.imgUrl});
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -108,20 +194,11 @@ const ImageHeading = styled.section`
   position: relative;
   z-index: 50;
   border-radius: var(--default-border-radius);
-
-  h2 {
-    font-family: 'Kanit', sans-serif;
-    font-size: 1.2em;
-    line-height: 1;
-    color: #fff;
-    margin: 0;
-    font-size: 1.3em;
-    text-align: center;
-    text-shadow: 0px 0px 9px rgba(0, 0, 0, 0.8);
-  }
+  height: ${(props) => (props.big ? '50vh' : 'unset')};
 `
+
 const TrackFacts = styled.section`
-  font-size: 0.8em;
+  font-size: 0.85em;
 
   strong {
     text-transform: uppercase;
@@ -129,6 +206,7 @@ const TrackFacts = styled.section`
     font-weight: 400;
     color: var(--secondary-color);
     letter-spacing: 1px;
+    margin-right: 8px;
   }
   ul {
     list-style: none;
@@ -136,12 +214,9 @@ const TrackFacts = styled.section`
     display: grid;
     grid-template-columns: 1fr 1fr;
     position: relative;
-    column-gap: 10%;
+    column-gap: 5px;
     li {
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      justify-content: space-between;
+      padding: 13px 0;
       align-items: baseline;
     }
 
@@ -161,16 +236,27 @@ const TrackFacts = styled.section`
       display: block;
       justify-content: unset;
     }
+    li.description {
+      font-size: 1.2em;
+      line-height: 1.5;
+    }
 
-    span {
-      font-size: 0.9em;
-      margin-right: 5px;
-      margin-left: 5px;
-      margin-bottom: 4px;
-      background-color: #3e382b20;
-      border-radius: var(--default-border-radius);
-      padding: 2px 4px;
-      display: inline-block;
+    li.static-map {
+      height: 170px;
+      background-image: url(${(props) => props.staticMapUrl});
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    li.static-map-menu {
+      display: flex;
+      margin-top: -15px;
     }
   }
+`
+
+const MapMenuButton = styled(ButtonDefault)`
+  font-size: 0.8em;
+  color: #fff;
 `

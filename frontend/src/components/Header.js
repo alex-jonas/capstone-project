@@ -32,4 +32,9 @@ const Wrapper = styled.header`
   img {
     height: 30px;
   }
+
+  button {
+    position: absolute;
+    left: 0;
+  }
 `

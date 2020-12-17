@@ -1,20 +1,20 @@
 import { useState, useEffect } from 'react'
 import styled from 'styled-components/macro'
-import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
 import Map from '../components/Map'
 import controlsSrc from '../assets/controls.svg'
 import FilterMenu from '../components/FilterMenu'
 import TrackCard from '../components/TrackCard'
-import Footer from '../components/Footer'
-import saveLastPositionLocally from '../lib/saveLastPositionLocally'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
+import ButtonDefault from '../components/ButtonDefault'
+import ResultGrid from '../components/ResultGrid'
+import updateCenter from '../lib/updateCenter'
 
 Results.propTypes = {
   startingPoint: PropTypes.object.isRequired,
 }
 
-export default function Results({ startingPoint }) {
+export default function Results({ startingPoint, setSingleTrack }) {
   const lastSearchedPosition = getLastSavedPosition()
   const [filterCriteria, setFilterCriteria] = useState({
     distance: 300000,
@@ -22,15 +22,13 @@ export default function Results({ startingPoint }) {
   const [tracks, setTracks] = useState([])
 
   const [centerCoords, setCenterCoords] = useState({
-    lat: startingPoint.latitude || lastSearchedPosition.lat,
-    lng: startingPoint.longitude || lastSearchedPosition.lng,
+    lat: startingPoint?.latitude || lastSearchedPosition.lat,
+    lng: startingPoint?.longitude || lastSearchedPosition.lng,
   })
   const [isFilterActive, setIsFilterActive] = useState(false)
 
   useEffect(() => {
-    saveLastPositionLocally(centerCoords)
-    const path = `track/${centerCoords.lat},${centerCoords.lng}`
-    getFromApi(path)
+    updateCenter(centerCoords)
       .then(({ data }) => setTracks(data))
       .catch((error) => console.error('Error:', error))
   }, [centerCoords])
@@ -67,7 +65,7 @@ export default function Results({ startingPoint }) {
       />
       <FilterBar>
         <FilterButton onClick={() => setIsFilterActive(true)}>
-          <strong>Filter</strong>{' '}
+          <strong>Filter</strong>
           {Object.keys(filterCriteria).length > 0 && (
             <span>{Object.keys(filterCriteria).length}</span>
           )}
@@ -92,11 +90,15 @@ export default function Results({ startingPoint }) {
       {!isFilterActive && (
         <ResultGrid>
           {filteredTracks.map((track) => (
-            <TrackCard track={track} key={track.id} />
+            <TrackCard
+              track={track}
+              key={track.id}
+              handleClick={setSingleTrack}
+              detailedMode={false}
+            />
           ))}
         </ResultGrid>
       )}
-      <Footer />
     </Wrapper>
   )
 }
@@ -136,29 +138,11 @@ const FilterBar = styled.section`
   }
 `
 
-const FilterButton = styled.button`
-  width: 100%;
-  height: 40px;
-  background-color: var(--primary-color);
-  border: 0;
-  box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.65);
-  color: #eee;
-  font-size: 1em;
-
+const FilterButton = styled(ButtonDefault)`
   strong {
     background-color: transparent;
     background-image: url(${controlsSrc});
     background-repeat: no-repeat;
     background-position-x: left;
-    padding-left: 25px;
-    letter-spacing: 0.1em;
   }
-`
-
-const ResultGrid = styled.div`
-  display: grid;
-  align-content: start;
-  gap: 20px;
-  background: #ddd;
-  padding-top: 20px;
 `

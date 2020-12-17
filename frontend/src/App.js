@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components/macro'
 import Header from './components/Header'
+import Details from './pages/Details'
 import Results from './pages/Results'
 import Start from './pages/Start'
 
@@ -13,6 +14,8 @@ export default function App() {
     googlePlaceId: '',
     isReadyToSearch: false,
   })
+
+  const [singleTrack, setSingleTrack] = useState({})
 
   return (
     <PageLayout>
@@ -26,15 +29,23 @@ export default function App() {
         </Route>
 
         <Route path="/results">
-          <>
-            <Header />
-            <Results startingPoint={startingPoint} />
-          </>
+          {singleTrack.id ? (
+            <Redirect to={`/details/${singleTrack.id}`} />
+          ) : (
+            <>
+              <Header goBackFunction={setStartingPoint} />
+              <Results
+                startingPoint={startingPoint}
+                setSingleTrack={setSingleTrack}
+              />
+            </>
+          )}
         </Route>
 
-        <Route exact path="/filter">
+        <Route path="/details/:urlId">
           <>
-            <div>Register</div>
+            <Header goBackFunction={setSingleTrack} />
+            <Details track={singleTrack} setSingleTrack={setSingleTrack} />
           </>
         </Route>
       </Switch>

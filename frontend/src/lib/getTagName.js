@@ -1,4 +1,5 @@
 export default function getTagName(id) {
+  const index = id - 1
   const tagNames = [
     'Wald',
     'Wiesen',
@@ -10,5 +11,8 @@ export default function getTagName(id) {
     'Seen/Flüsse',
     'Meer',
   ]
-  return tagNames[id - 1]
+
+  return isNaN(index) || index < 0 || index > tagNames.length - 1
+    ? null
+    : tagNames[index]
 }
