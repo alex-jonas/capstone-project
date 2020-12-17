@@ -1,5 +1,7 @@
 import styled from 'styled-components/macro'
-
+/**
+ * Visualization bar of way surface
+ */
 export default function WayTypesBar({ surfaceValues }) {
   const surfaceValuesSum = surfaceValues.reduce((a, c) => a + c)
   const surfaceForcedPercentage = surfaceValues.map((value) =>
@@ -32,8 +34,8 @@ export default function WayTypesBar({ surfaceValues }) {
         ))}
       </div>
       <ul class="waytypes_legend">
-        {wayTypes.map(({ title, color, percentage }) => (
-          <li>
+        {wayTypes.map(({ title, color, percentage }, index) => (
+          <li key={index}>
             <svg
               viewBox="0 0 16 16"
               version="1.1"

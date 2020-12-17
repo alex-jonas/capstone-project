@@ -9,11 +9,12 @@ export default function FilterMenu({
   allTracks,
   isFilterActive,
   tracksNumber,
+  bookmarkIds,
 }) {
   const maxDistance = 600000
   const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))
 
-  const { distance, lengthM, roundtrip, certYear } = filterCriteria
+  const { distance, lengthM, roundtrip, certYear, bookmarked } = filterCriteria
 
   const distanceStep = 10
   const distanceKm = distance / 1000
@@ -28,11 +29,16 @@ export default function FilterMenu({
 
   const roundtripPresetValue = roundtrip ? roundtrip : false
   const certYearPresetValue = certYear ? certYear : false
+  const bookmarkedPresetValue = bookmarked ? bookmarked : false
 
   return (
     <Wrapper active={isFilterActive}>
       <h2>Finde deine perfekte Tour</h2>
-      <CloseButton setStateFunction={setIsFilterActive} />
+      <CloseButton
+        setStateFunction={setIsFilterActive}
+        color="#eeeeee"
+        size="30"
+      />
       <Controls>
         <label>
           <span>Umkreis: {distanceKmPresetValue} km</span>
@@ -79,16 +85,29 @@ export default function FilterMenu({
             onChange={handleCheckboxChange}
           />
         </label>
-        <p>Ergebnisse: {tracksNumber}</p>
-        <button
-          type="reset"
-          onClick={() => {
-            setFilterCriteria({})
-            setIsFilterActive(false)
-          }}
-        >
-          Filter zurücksetzen
-        </button>
+        <label>
+          <span>Nur Bookmarks: </span>
+          <input
+            type="checkbox"
+            name="bookmarked"
+            defaultChecked={bookmarkedPresetValue}
+            onChange={handleCheckboxChange}
+          />
+        </label>
+        <ButtonArea>
+          <button type="button" onClick={() => setIsFilterActive(false)}>
+            <strong>Treffer: {tracksNumber}</strong>
+          </button>
+          <button
+            type="reset"
+            onClick={() => {
+              setFilterCriteria({})
+              setIsFilterActive(false)
+            }}
+          >
+            Zurücksetzen
+          </button>
+        </ButtonArea>
       </Controls>
     </Wrapper>
   )
@@ -115,6 +134,7 @@ export default function FilterMenu({
 const Wrapper = styled(SlideInMenuDefault)`
   right: ${(props) => (props.active ? '0' : '100%')};
   padding: 12%;
+  font-size: 0.8em;
 
   h2 {
     font-family: 'Kanit', sans-serif;
@@ -132,5 +152,26 @@ const Controls = styled.form`
   }
   input {
     width: 100%;
+  }
+`
+const ButtonArea = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  button {
+    display: block;
+    border: 1px solid #eee;
+    background: none;
+    color: #eee;
+    padding: 1em;
+    font-size: 1em;
+    letter-spacing: 1px;
+    border-radius: var(--default-border-radius);
+  }
+
+  button[type='button'] {
+    background: #eee;
+    border: none;
+    color: var(--primary-color);
   }
 `

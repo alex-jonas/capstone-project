@@ -1,20 +1,22 @@
-import { useState, useEffect } from 'react'
-import styled from 'styled-components/macro'
 import PropTypes from 'prop-types'
-import Map from '../components/Map'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components/macro'
 import controlsSrc from '../assets/controls.svg'
-import FilterMenu from '../components/FilterMenu'
-import TrackCard from '../components/TrackCard'
-import getLastSavedPosition from '../lib/getLastSavedPosition'
 import ButtonDefault from '../components/ButtonDefault'
+import FilterMenu from '../components/FilterMenu'
+import Map from '../components/Map'
 import ResultGrid from '../components/ResultGrid'
+import TrackCard from '../components/TrackCard'
+import getBooleanFilterResult from '../lib/getBooleanFilterResult'
+import getLastSavedPosition from '../lib/getLastSavedPosition'
 import updateCenter from '../lib/updateCenter'
 
-Results.propTypes = {
-  startingPoint: PropTypes.object.isRequired,
-}
-
-export default function Results({ startingPoint, setSingleTrack }) {
+export default function Results({
+  startingPoint,
+  setSingleTrack,
+  bookmarks,
+  setBookmarks,
+}) {
   const lastSearchedPosition = getLastSavedPosition()
   const [filterCriteria, setFilterCriteria] = useState({
     distance: 300000,
@@ -29,32 +31,24 @@ export default function Results({ startingPoint, setSingleTrack }) {
 
   useEffect(() => {
     updateCenter(centerCoords)
-      .then(({ data }) => setTracks(data))
+      .then(({ data }) => data)
+      .then((tracks) =>
+        tracks.map((track) => {
+          const bookmarkForTrack = bookmarks.find(
+            (bookmark) => bookmark.id === track.id
+          )
+          return bookmarkForTrack
+            ? { ...track, bookmarked: bookmarkForTrack.date }
+            : track
+        })
+      )
+      .then((tracksWithBookmarks) => setTracks(tracksWithBookmarks))
       .catch((error) => console.error('Error:', error))
-  }, [centerCoords])
+  }, [centerCoords, bookmarks])
 
-  const filteredTracks = tracks.filter((track) => {
-    for (const key in filterCriteria) {
-      if (track[key] === undefined) {
-        return false
-      } else if (
-        (key === 'distance' || key === 'lengthM') &&
-        track[key] > filterCriteria[key]
-      ) {
-        return false
-      } else if (key === 'roundtrip' && track[key] !== filterCriteria[key]) {
-        return false
-      } else if (key === 'difficulty' && track[key] !== filterCriteria[key]) {
-        return false
-      } else if (
-        key === 'certYear' &&
-        Boolean(track[key]) !== filterCriteria[key]
-      ) {
-        return false
-      }
-    }
-    return true
-  })
+  const filteredTracks = tracks.filter((track) =>
+    getBooleanFilterResult(track, filterCriteria)
+  )
 
   return (
     <Wrapper>
@@ -95,6 +89,8 @@ export default function Results({ startingPoint, setSingleTrack }) {
               key={track.id}
               handleClick={setSingleTrack}
               detailedMode={false}
+              bookmarks={bookmarks}
+              setBookmarks={setBookmarks}
             />
           ))}
         </ResultGrid>
@@ -109,6 +105,7 @@ const Wrapper = styled.main`
   overflow: scroll;
   position: relative;
   padding-top: 46px;
+  user-select: none;
 `
 
 const FilterBar = styled.section`
@@ -146,3 +143,7 @@ const FilterButton = styled(ButtonDefault)`
     background-position-x: left;
   }
 `
+
+Results.propTypes = {
+  startingPoint: PropTypes.object.isRequired,
+}

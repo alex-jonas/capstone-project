@@ -25,4 +25,6 @@ body {
     font-size:112.5%;
     color: var(--text-color);
    
-}`
+}
+
+button:focus {outline:0;}`

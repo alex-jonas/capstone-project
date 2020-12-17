@@ -1,8 +1,8 @@
 import {
-  useLoadScript,
   GoogleMap,
-  Marker,
   KmlLayer,
+  Marker,
+  useLoadScript,
 } from '@react-google-maps/api'
 import { useRef } from 'react'
 

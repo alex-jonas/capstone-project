@@ -1,24 +1,27 @@
-import styled from 'styled-components/macro'
-import starSrc from '../assets/star.svg'
-import premiumSrc from '../assets/premium.svg'
-import getDifficultyName from '../lib/getDifficultyName'
-import getHoursFromMinutes from '../lib/getHoursFromMinutes'
 import PropTypes from 'prop-types'
+import styled from 'styled-components/macro'
+import premiumSrc from '../assets/premium.svg'
+import starSrc from '../assets/star.svg'
+import starActiveSrc from '../assets/star_active.svg'
+import getDifficultyName from '../lib/getDifficultyName'
 import getFormattedDate from '../lib/getFormattedDate'
-import WayTypesBar from './WayTypesBar'
-import TourTags from './TourTags'
-import ButtonDefault from './ButtonDefault'
+import getHoursFromMinutes from '../lib/getHoursFromMinutes'
 import openExternalLink from '../lib/openExternalLink'
+import ButtonDefault from './ButtonDefault'
+import StarButton from './StarButton'
+import TourTags from './TourTags'
+import WayTypesBar from './WayTypesBar'
 
-TrackCard.propTypes = {
-  track: PropTypes.object.isRequired,
-}
-
+/**
+ * Central component for showing track data
+ */
 export default function TrackCard({
   track,
   handleClick,
   detailedMode,
   setIsDetailMapActive,
+  bookmarks,
+  setBookmarks,
 }) {
   const {
     id,
@@ -39,40 +42,58 @@ export default function TrackCard({
   } = track
 
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
+  const trackPhotoSrc = process.env.REACT_APP_BASE_URL_IMAGE + id + '.jpg'
 
   const staticMapImgSrc = `https://maps.googleapis.com/maps/api/staticmap?center=${firstLat},${firstLon}&zoom=10&size=400x200&key=${apiKey}&maptype=terrain&scale=2&markers=color:0x4C6A28|${firstLat},${firstLon}`
   const googleRouteHref = `https://google.com/maps/?daddr=${firstLat},${firstLon}`
 
+  const bookmarkIndexInArray = bookmarks?.findIndex(
+    (bookmark) => bookmark.id === id
+  )
+  const isBookmarked = bookmarkIndexInArray > -1
+
   return (
     <>
-      <Wrapper
-        onClick={() => (!detailedMode ? handleClick(track) : false)}
-        detailedMode={detailedMode}
-      >
+      <Wrapper detailedMode={detailedMode}>
         {detailedMode && (
           <>
             <h2>{title}</h2>
           </>
         )}
-        <ImageHeading big={detailedMode}>
-          {!detailedMode && <h2>{title}</h2>}
-          <BookmarkButton>
-            <img src={starSrc} alt={`Wanderung Nr. ${id} bookmarken`} />
+        <ImageHeading big={detailedMode} photoSrc={trackPhotoSrc}>
+          {!detailedMode && <h2 onClick={() => handleClick(track)}>{title}</h2>}
+          <BookmarkButton
+            onClick={() => {
+              setBookmarks(toggleBookmarkArray())
+            }}
+          >
+            <StarButton active={isBookmarked} />
           </BookmarkButton>
         </ImageHeading>
 
-        <TrackFacts staticMapUrl={staticMapImgSrc}>
+        <TrackFacts
+          staticMapUrl={staticMapImgSrc}
+          onClick={() => (!detailedMode ? handleClick(track) : false)}
+        >
           <ul>
             {detailedMode && (
               <>
                 <li className="one-column description">{description}</li>
-
-                <li className="one-column static-map"></li>
+                <li
+                  className="one-column static-map"
+                  onClick={() => setIsDetailMapActive(true)}
+                ></li>
                 <li className="one-column static-map-menu">
                   <MapMenuButton onClick={() => setIsDetailMapActive(true)}>
-                    Detailkarte
+                    Wanderkarte
                   </MapMenuButton>
-                  <MapMenuButton>Tour merken</MapMenuButton>
+                  <MapMenuButton
+                    onClick={() => {
+                      setBookmarks(toggleBookmarkArray())
+                    }}
+                  >
+                    {!isBookmarked ? 'Like' : 'Unlike'}
+                  </MapMenuButton>
                   <MapMenuButton
                     onClick={() => openExternalLink(googleRouteHref)}
                   >
@@ -152,6 +173,15 @@ export default function TrackCard({
       </Wrapper>
     </>
   )
+
+  function toggleBookmarkArray() {
+    return !isBookmarked
+      ? [...bookmarks, { id: id, date: new Date() }]
+      : [
+          ...bookmarks.slice(0, bookmarkIndexInArray),
+          ...bookmarks.slice(bookmarkIndexInArray + 1),
+        ]
+  }
 }
 
 const Wrapper = styled.section`
@@ -182,10 +212,12 @@ const BookmarkButton = styled.button`
   border: 0;
   background-color: transparent;
 `
-
 const ImageHeading = styled.section`
   display: grid;
-  background: url('https://images.unsplash.com/photo-1507041957456-9c397ce39c97?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80');
+  background: ${(props) =>
+      !props.big &&
+      'linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),'}
+    url(${(props) => props.photoSrc});
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
@@ -222,6 +254,7 @@ const TrackFacts = styled.section`
 
     li.premium {
       position: absolute;
+      display: none;
       top: 0;
       right: 0;
       border: none;
@@ -259,4 +292,12 @@ const TrackFacts = styled.section`
 const MapMenuButton = styled(ButtonDefault)`
   font-size: 0.8em;
   color: #fff;
+  white-space: nowrap;
 `
+
+TrackCard.propTypes = {
+  track: PropTypes.object.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  detailedMode: PropTypes.bool,
+  setIsDetailMapActive: PropTypes.func.isRequired,
+}

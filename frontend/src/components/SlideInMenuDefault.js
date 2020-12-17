@@ -11,6 +11,6 @@ export default styled.div`
   z-index: 300;
   position: absolute;
   font-size: 1em;
-  color: #eeeeee;
+  color: #eee;
   transition: right 0.2s ease-out;
 `

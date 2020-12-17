@@ -1,20 +1,21 @@
-import { useState } from 'react'
-import styled from 'styled-components/macro'
-import getFromApi from '../lib/getFromApi'
 import PropTypes from 'prop-types'
-import Map from '../components/Map'
-import TrackCard from '../components/TrackCard'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import getLastSavedPosition from '../lib/getLastSavedPosition'
+import styled from 'styled-components/macro'
+import CloseButton from '../components/CloseButton'
+import Map from '../components/Map'
 import ResultGrid from '../components/ResultGrid'
 import SlideInMenuDefault from '../components/SlideInMenuDefault'
-import CloseButton from '../components/CloseButton'
+import TrackCard from '../components/TrackCard'
+import getFromApi from '../lib/getFromApi'
+import getLastSavedPosition from '../lib/getLastSavedPosition'
 
-Details.propTypes = {
-  track: PropTypes.object.isRequired,
-}
-
-export default function Details({ track, setSingleTrack }) {
+export default function Details({
+  track,
+  setSingleTrack,
+  bookmarks,
+  setBookmarks,
+}) {
   const [isDetailMapActive, setIsDetailMapActive] = useState(false)
 
   let { urlId } = useParams()
@@ -33,16 +34,17 @@ export default function Details({ track, setSingleTrack }) {
   return (
     <Wrapper>
       <DetailedMap active={isDetailMapActive}>
-        <CloseButton setStateFunction={setIsDetailMapActive} />
+        <CloseButton setStateFunction={setIsDetailMapActive} color="#203d1f" />
         <Map kmlFile={track.kmlFile} singleMode></Map>
       </DetailedMap>
-
       {!isDetailMapActive && (
         <ResultGrid>
           <TrackCard
             track={track}
             detailedMode
             setIsDetailMapActive={setIsDetailMapActive}
+            bookmarks={bookmarks}
+            setBookmarks={setBookmarks}
           />
         </ResultGrid>
       )}
@@ -61,3 +63,6 @@ const Wrapper = styled.main`
 const DetailedMap = styled(SlideInMenuDefault)`
   right: ${(props) => (props.active ? '0' : '100%')};
 `
+Details.propTypes = {
+  track: PropTypes.object.isRequired,
+}
