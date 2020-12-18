@@ -18,7 +18,8 @@ export default function App() {
   })
 
   const [singleTrack, setSingleTrack] = useState({})
-  const [bookmarks, setBookmarks] = useState(getBookmarks || [])
+
+  const [bookmarks, setBookmarks] = useState(getBookmarks() ?? [])
 
   useEffect(() => {
     storeBookmarks(bookmarks)

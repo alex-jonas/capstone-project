@@ -8,7 +8,9 @@ import Map from '../components/Map'
 import ResultGrid from '../components/ResultGrid'
 import TrackCard from '../components/TrackCard'
 import getBooleanFilterResult from '../lib/getBooleanFilterResult'
+import getLastFilter from '../lib/getLastFilter'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
+import saveLastFilter from '../lib/saveLastFilter'
 import updateCenter from '../lib/updateCenter'
 
 export default function Results({
@@ -18,9 +20,14 @@ export default function Results({
   setBookmarks,
 }) {
   const lastSearchedPosition = getLastSavedPosition()
-  const [filterCriteria, setFilterCriteria] = useState({
+  const lastFilter = getLastFilter()
+  const initialFilterState = {
     distance: 300000,
-  })
+  }
+
+  const [filterCriteria, setFilterCriteria] = useState(
+    lastFilter ?? initialFilterState
+  )
   const [tracks, setTracks] = useState([])
 
   const [centerCoords, setCenterCoords] = useState({
@@ -28,6 +35,12 @@ export default function Results({
     lng: startingPoint?.longitude || lastSearchedPosition.lng,
   })
   const [isFilterActive, setIsFilterActive] = useState(false)
+
+  useEffect(() => {
+    !isFilterActive &&
+      filterCriteria !== lastFilter &&
+      saveLastFilter(filterCriteria)
+  }, [isFilterActive])
 
   useEffect(() => {
     updateCenter(centerCoords)
@@ -79,6 +92,7 @@ export default function Results({
         allTracks={tracks}
         isFilterActive={isFilterActive}
         tracksNumber={filteredTracks.length}
+        initialFilterState={initialFilterState}
       />
 
       {!isFilterActive && (

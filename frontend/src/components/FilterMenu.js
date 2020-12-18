@@ -6,26 +6,26 @@ export default function FilterMenu({
   setFilterCriteria,
   filterCriteria,
   setIsFilterActive,
-  allTracks,
   isFilterActive,
   tracksNumber,
-  bookmarkIds,
+  initialFilterState,
 }) {
-  const maxDistance = 600000
-  const maxLengthM = Math.max(...allTracks.map((track) => track.lengthM))
-
   const { distance, lengthM, roundtrip, certYear, bookmarked } = filterCriteria
 
+  const maxDistance = 600000
+  const maxLengthM = 20000
+  const distanceInput = distance || maxDistance
+  const lengthMInput = lengthM || maxLengthM
+
   const distanceStep = 10
-  const distanceKm = distance / 1000
+  const distanceKm = distanceInput / 1000
   const distanceKmCeil = Math.ceil(distanceKm / distanceStep) * distanceStep
-  const distanceKmPresetValue =
-    distance > 0 ? distanceKmCeil : maxDistance / 1000
+  const distanceKmPresetValue = distanceKmCeil
 
   const lengthStep = 1
-  const lengthKm = lengthM / 1000
+  const lengthKm = lengthMInput / 1000
   const lengthKmCeil = Math.ceil(lengthKm / lengthStep) * lengthStep
-  const lengthKmPresetValue = lengthM > 0 ? lengthKmCeil : maxLengthM / 1000
+  const lengthKmPresetValue = lengthKmCeil
 
   const roundtripPresetValue = roundtrip ? roundtrip : false
   const certYearPresetValue = certYear ? certYear : false
@@ -36,33 +36,33 @@ export default function FilterMenu({
       <h2>Finde deine perfekte Tour</h2>
       <CloseButton
         setStateFunction={setIsFilterActive}
-        color="#eeeeee"
+        color="#eee"
         size="30"
       />
       <Controls>
         <label>
           <span>Umkreis: {distanceKmPresetValue} km</span>
           <input
-            min="0"
+            min={distanceStep * 1000}
             step={distanceStep * 1000}
             max={maxDistance}
             type="range"
             defaultValue={distanceKmPresetValue * 1000}
             name="distance"
-            onChange={handleConfigChange}
+            onChange={handleFilterChange}
           />
         </label>
 
         <label>
           <span>Maximale Länge: {lengthKmPresetValue} km</span>
           <input
-            min="1000"
+            min={lengthStep * 1000}
             step={lengthStep * 1000}
             max={maxLengthM}
             defaultValue={lengthKmPresetValue * 1000}
             type="range"
             name="lengthM"
-            onChange={handleConfigChange}
+            onChange={handleFilterChange}
           />
         </label>
 
@@ -72,7 +72,7 @@ export default function FilterMenu({
             type="checkbox"
             name="roundtrip"
             defaultChecked={roundtripPresetValue}
-            onChange={handleCheckboxChange}
+            onChange={handleFilterChange}
           />
         </label>
 
@@ -82,7 +82,7 @@ export default function FilterMenu({
             type="checkbox"
             name="certYear"
             defaultChecked={certYearPresetValue}
-            onChange={handleCheckboxChange}
+            onChange={handleFilterChange}
           />
         </label>
         <label>
@@ -91,7 +91,7 @@ export default function FilterMenu({
             type="checkbox"
             name="bookmarked"
             defaultChecked={bookmarkedPresetValue}
-            onChange={handleCheckboxChange}
+            onChange={handleFilterChange}
           />
         </label>
         <ButtonArea>
@@ -101,7 +101,7 @@ export default function FilterMenu({
           <button
             type="reset"
             onClick={() => {
-              setFilterCriteria({})
+              setFilterCriteria(initialFilterState)
               setIsFilterActive(false)
             }}
           >
@@ -112,21 +112,17 @@ export default function FilterMenu({
     </Wrapper>
   )
 
-  function handleConfigChange(event) {
-    const property = event.target.name
-    const value =
-      property === 'roundtrip' ? event.target.checked : +event.target.value
-    setFilterCriteria({
+  function handleFilterChange(event) {
+    const { type, name, value, checked } = event.target
+    const filterIsCheckbox = type === 'checkbox'
+    const filterProperty = name
+    const filterValue = filterIsCheckbox ? checked : +value
+    const newFilterCriteria = {
       ...filterCriteria,
-      [property]: value,
-    })
-  }
-
-  function handleCheckboxChange(event) {
-    const property = event.target.name
-    const value = event.target.checked
-    const newFilterCriteria = { ...filterCriteria, [property]: value }
-    !value && delete newFilterCriteria[property]
+      [filterProperty]: filterValue,
+    }
+    filterIsCheckbox && !filterValue && delete newFilterCriteria[filterProperty]
+    console.log(newFilterCriteria)
     setFilterCriteria(newFilterCriteria)
   }
 }
