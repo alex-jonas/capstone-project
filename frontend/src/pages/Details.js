@@ -31,6 +31,7 @@ export default function Details({
       .then(({ data }) => setSingleTrack(data))
       .catch((e) => console.error(e))
 
+  console.log(track)
   return (
     <Wrapper>
       <DetailedMap active={isDetailMapActive}>

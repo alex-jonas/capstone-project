@@ -29,8 +29,11 @@ export default function WayTypesBar({ surfaceValues }) {
   return (
     <Wrapper>
       <div class="waytypes">
-        {wayTypes.map(({ percentage, color }) => (
-          <div style={{ width: percentage, backgroundColor: color }}></div>
+        {wayTypes.map(({ percentage, color }, index) => (
+          <div
+            key={index}
+            style={{ width: percentage, backgroundColor: color }}
+          ></div>
         ))}
       </div>
       <ul class="waytypes_legend">
