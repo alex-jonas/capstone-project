@@ -28,19 +28,28 @@ class TrackRepository extends ServiceEntityRepository
         return $track;
     }
 
-    /* public function findByLocation(float $latOrigin, float $lngOrigin)
+    public function matchWithFilterRequest(array $filter): array
     {
-        $earth_diameter = 12742; // 2 * Earth's radius (6371 km)
+        // automatically knows to select Products
+        // the "p" is an alias you'll use in the rest of the quer
 
-        $distanceKmSql = "$earth_diameter * ASIN(SQRT(POWER(SIN(($latOrigin - track.first_lat) * PI()/360), 2) + COS($latOrigin  * PI()/180) * COS(track.first_lat * PI()/180) * POWER(SIN(( $lngOrigin -  track_first_lon) * PI()/360), 2)))";
-        var_dump($this);
-        $result = $this->_em->createQueryBuilder('track')
-            ->select("track, $distanceKmSql AS HIDDEN track")
-            ->orderBy('track.distance', 'ASC')
-            ->setMaxResults(5)
-            ->getQuery()
-            ->getResult();
+        $qb = $this->createQueryBuilder('track')
+            ->where('1=1')
+            ->orderBy('track.distance', 'ASC');
 
-        return $result;
-    }*/
+        if ($filter['distance']) {
+            $qb->andWhere('track.distance < :inputDistance')->setParameter('inputDistance', $filter['distance']);
+        }
+
+        if ($filter['lengthM']) {
+            $qb->andWhere('track.length_m < :inputLengthM')->setParameter('inputLengthM', $filter['lengthM']);
+        }
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+
+        // to get just one result:
+        // $product = $query->setMaxResults(1)->getOneOrNullResult();
+    }
 }

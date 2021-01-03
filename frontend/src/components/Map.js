@@ -4,6 +4,9 @@ import {
   Marker,
   useLoadScript,
 } from '@react-google-maps/api'
+import markerSrc from '../assets/marker.svg'
+import myLocationSrc from '../assets/mylocation.svg'
+
 import { useRef } from 'react'
 
 export default function Map({
@@ -12,6 +15,8 @@ export default function Map({
   tracks,
   singleMode,
   kmlFile,
+  firstLon,
+  firstLat,
 }) {
   const apiKey = process.env.REACT_APP_GOOGLE_API_KEY
   const baseUrlKml = process.env.REACT_APP_BASE_URL_KML
@@ -56,12 +61,26 @@ export default function Map({
       }}
       disableDefaultUI
     >
-      {singleMode && kmlFile && <KmlLayer url={baseUrlKml + kmlFile} />}
-      <Marker position={centerCoords} />
+      {singleMode && kmlFile && (
+        <>
+          <KmlLayer url={baseUrlKml + kmlFile} />
+
+          <Marker
+            position={{ lat: +firstLat, lng: +firstLon }}
+            icon={markerSrc}
+          />
+        </>
+      )}
       {!singleMode &&
         tracks.map(({ firstLat, firstLon }, index) => (
-          <Marker key={index} position={{ lat: +firstLat, lng: +firstLon }} />
+          <Marker
+            key={index}
+            position={{ lat: +firstLat, lng: +firstLon }}
+            icon={markerSrc}
+          />
         ))}
+
+      <Marker position={centerCoords} icon={myLocationSrc} />
     </GoogleMap>
   )
   return isLoaded ? map : null
