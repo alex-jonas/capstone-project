@@ -1,17 +1,25 @@
 export default function getBooleanFilterResult(track, filterCriteria) {
-  for (const key in filterCriteria) {
-    if (!track[key]) {
+  for (const filterProperty in filterCriteria) {
+    if (!track[filterProperty]) {
       return false
     } else if (
-      key === ('distance' || 'lengthM') &&
-      track[key] > filterCriteria[key]
+      filterProperty === 'distance' &&
+      track[filterProperty] > filterCriteria[filterProperty]
     ) {
       return false
-    } else if (key === 'difficulty' && track[key] !== filterCriteria[key]) {
+    } else if (
+      filterProperty === 'lengthM' &&
+      track[filterProperty] > filterCriteria[filterProperty]
+    ) {
       return false
     } else if (
-      key === ('certYear' || 'bookmarked' || 'roundtrip') &&
-      Boolean(track[key]) !== filterCriteria[key]
+      filterProperty === 'difficulty' &&
+      track[filterProperty] !== filterCriteria[filterProperty]
+    ) {
+      return false
+    } else if (
+      filterProperty === ('certYear' || 'bookmarked' || 'roundtrip') &&
+      Boolean(track[filterProperty]) !== filterCriteria[filterProperty]
     ) {
       return false
     }

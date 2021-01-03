@@ -24,7 +24,7 @@ const Wrapper = styled.div`
     font-size: 0.9em;
     margin-right: 5px;
     margin-bottom: 4px;
-    background-color: #3e382b30;
+    background-color: var(--tag-background);
     border-radius: var(--default-border-radius);
     padding: 8px;
     display: inline-block;

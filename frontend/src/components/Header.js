@@ -37,7 +37,7 @@ const Wrapper = styled.header`
   position: absolute;
   top: 0;
   left: 0;
-  box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
+  box-shadow: 0 1px 4px 0 var(--bar-shadow);
   background: #fff;
   z-index: 200;
   display: grid;

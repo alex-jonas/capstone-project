@@ -8,7 +8,9 @@ import Map from '../components/Map'
 import ResultGrid from '../components/ResultGrid'
 import TrackCard from '../components/TrackCard'
 import getBooleanFilterResult from '../lib/getBooleanFilterResult'
+import getLastFilter from '../lib/getLastFilter'
 import getLastSavedPosition from '../lib/getLastSavedPosition'
+import saveLastFilter from '../lib/saveLastFilter'
 import updateCenter from '../lib/updateCenter'
 
 export default function Results({
@@ -18,9 +20,14 @@ export default function Results({
   setBookmarks,
 }) {
   const lastSearchedPosition = getLastSavedPosition()
-  const [filterCriteria, setFilterCriteria] = useState({
+  const lastFilter = getLastFilter()
+  const initialFilterState = {
     distance: 300000,
-  })
+  }
+
+  const [filterCriteria, setFilterCriteria] = useState(
+    lastFilter ?? initialFilterState
+  )
   const [tracks, setTracks] = useState([])
 
   const [centerCoords, setCenterCoords] = useState({
@@ -28,6 +35,12 @@ export default function Results({
     lng: startingPoint?.longitude || lastSearchedPosition.lng,
   })
   const [isFilterActive, setIsFilterActive] = useState(false)
+
+  useEffect(() => {
+    !isFilterActive &&
+      filterCriteria !== lastFilter &&
+      saveLastFilter(filterCriteria)
+  }, [isFilterActive])
 
   useEffect(() => {
     updateCenter(centerCoords)
@@ -79,6 +92,7 @@ export default function Results({
         allTracks={tracks}
         isFilterActive={isFilterActive}
         tracksNumber={filteredTracks.length}
+        initialFilterState={initialFilterState}
       />
 
       {!isFilterActive && (
@@ -110,7 +124,7 @@ const Wrapper = styled.main`
 
 const FilterBar = styled.section`
   background: #fff;
-  box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
+  box-shadow: 0 1px 4px 0 var(--bar-shadow);
   text-align: center;
   padding: 0;
   position: sticky;
@@ -123,15 +137,7 @@ const FilterBar = styled.section`
 
   div {
     white-space: nowrap;
-    overflow-x: scroll;
     padding-top: 12px;
-  }
-  span {
-    background: #00000020;
-    border-radius: var(--default-border-radius);
-    padding: 0 5px;
-    margin: 0 5px;
-    display: inline;
   }
 `
 
@@ -141,6 +147,14 @@ const FilterButton = styled(ButtonDefault)`
     background-image: url(${controlsSrc});
     background-repeat: no-repeat;
     background-position-x: left;
+  }
+
+  span {
+    background: #00000020;
+    border-radius: var(--default-border-radius);
+    padding: 0 5px;
+    margin: 0 5px;
+    display: inline;
   }
 `
 

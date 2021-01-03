@@ -9,6 +9,7 @@ import closeSrc from './../assets/close.svg'
 import compassSrc from './../assets/compass.svg'
 import startscreenJpg from './../assets/startscreen.jpg'
 import wandergoldSrc from './../assets/wandergold.svg'
+import { v4 as uuidv4 } from 'uuid'
 
 export default function Start({ handleSubmit }) {
   const [isSearchFocused, setIsSearchFocused] = useState(false)
@@ -44,6 +45,7 @@ export default function Start({ handleSubmit }) {
               <>
                 {navigator.geolocation && (
                   <li
+                    key={uuidv4()}
                     className="geoLocator"
                     onClick={() =>
                       getGeolocationOfUser(handleSubmit, {
@@ -58,25 +60,20 @@ export default function Start({ handleSubmit }) {
 
                 {suggestionList.map(
                   ({ loading, description, googlePlaceId }) => (
-                    <>
-                      {loading && (
-                        <li key="loading">
-                          <Loader />
-                        </li>
-                      )}
-                      <li
-                        onClick={() =>
-                          getCoordsAndSearch(
-                            description,
-                            googlePlaceId,
-                            handleSubmit
-                          )
-                        }
-                        key={googlePlaceId}
-                      >
-                        {description}
-                      </li>
-                    </>
+                    <li
+                      key={uuidv4()}
+                      onClick={() =>
+                        !loading
+                          ? getCoordsAndSearch(
+                              description,
+                              googlePlaceId,
+                              handleSubmit
+                            )
+                          : false
+                      }
+                    >
+                      {loading ? <Loader /> : description}
+                    </li>
                   )
                 )}
               </>
@@ -167,16 +164,6 @@ const SearchSuggestions = styled.div`
   font-size: 0.9em;
   padding: 5px;
 
-  button {
-    width: 100%;
-    background: var(--primary-gradient);
-    border: none;
-    border-radius: 5px;
-    font-size: 1em;
-    color: var(--text-invert-color);
-    padding: 10px 5px;
-  }
-
   ul {
     list-style: none;
     margin: 0;
@@ -192,7 +179,7 @@ const SearchSuggestions = styled.div`
     }
 
     li.geoLocator {
-      border-bottom: 1px solid grey;
+      border-bottom: 1px solid var(--separator-color);
       background-image: url(${compassSrc});
       background-repeat: no-repeat;
       background-size: 15px;

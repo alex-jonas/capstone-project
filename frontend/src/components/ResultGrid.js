@@ -4,7 +4,7 @@ export default styled.div`
   display: grid;
   align-content: start;
   gap: 20px;
-  background: #ddd;
+  background: var(--result-background);
   padding: 10px;
   padding-top: 20px;
 `

@@ -35,7 +35,12 @@ export default function Details({
     <Wrapper>
       <DetailedMap active={isDetailMapActive}>
         <CloseButton setStateFunction={setIsDetailMapActive} color="#203d1f" />
-        <Map kmlFile={track.kmlFile} singleMode></Map>
+        <Map
+          kmlFile={track.kmlFile}
+          firstLat={track.firstLat}
+          firstLon={track.firstLon}
+          singleMode
+        ></Map>
       </DetailedMap>
       {!isDetailMapActive && (
         <ResultGrid>
