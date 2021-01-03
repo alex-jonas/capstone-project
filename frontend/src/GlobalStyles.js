@@ -15,7 +15,7 @@ export default createGlobalStyle`
     --secondary-gradient: linear-gradient(0deg, rgba(112,101,76,1) 0%, rgba(62,56,43,1) 100%); 
     --secondary-shadow: 0px 4px 10px var(--secondary-color);
     --text-color: #1a1a1a;
-    --text-invert-color: #eaeaea;
+    --text-invert-color: #fafafa;
     --heading-color: #3F4F2C;
     --default-border-radius: 5px;
     --tag-background: #3e382b30;

@@ -60,25 +60,20 @@ export default function Start({ handleSubmit }) {
 
                 {suggestionList.map(
                   ({ loading, description, googlePlaceId }) => (
-                    <>
-                      {loading && (
-                        <li key={uuidv4()}>
-                          <Loader />
-                        </li>
-                      )}
-                      <li
-                        key={uuidv4()}
-                        onClick={() =>
-                          getCoordsAndSearch(
-                            description,
-                            googlePlaceId,
-                            handleSubmit
-                          )
-                        }
-                      >
-                        {description}
-                      </li>
-                    </>
+                    <li
+                      key={uuidv4()}
+                      onClick={() =>
+                        !loading
+                          ? getCoordsAndSearch(
+                              description,
+                              googlePlaceId,
+                              handleSubmit
+                            )
+                          : false
+                      }
+                    >
+                      {loading ? <Loader /> : description}
+                    </li>
                   )
                 )}
               </>
