@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types'
 import styled from 'styled-components/macro'
 import premiumSrc from '../assets/premium.svg'
-import starSrc from '../assets/star.svg'
-import starActiveSrc from '../assets/star_active.svg'
 import getDifficultyName from '../lib/getDifficultyName'
 import getFormattedDate from '../lib/getFormattedDate'
 import getHoursFromMinutes from '../lib/getHoursFromMinutes'
@@ -197,7 +195,8 @@ const Wrapper = styled.section`
     line-height: 1;
     margin: ${(props) => (props.detailedMode ? '15px 0' : '0')};
     font-size: ${(props) => (props.detailedMode ? '1.7em' : '1.3em')};
-    color: ${(props) => (props.detailedMode ? '#3F4F2C' : '#fff')};
+    color: ${(props) =>
+      props.detailedMode ? 'var(--heading-color)' : 'var(--text-invert-color)'};
     text-align: ${(props) => (props.detailedMode ? 'left' : 'center')};
     text-shadow: ${(props) =>
       props.detailedMode ? 'none' : '0px 0px 9px rgba(0, 0, 0, 0.8)'};
@@ -291,13 +290,11 @@ const TrackFacts = styled.section`
 
 const MapMenuButton = styled(ButtonDefault)`
   font-size: 0.8em;
-  color: #fff;
+  color: var(--text-invert-color);
   white-space: nowrap;
 `
 
 TrackCard.propTypes = {
   track: PropTypes.object.isRequired,
-  handleClick: PropTypes.func.isRequired,
   detailedMode: PropTypes.bool,
-  setIsDetailMapActive: PropTypes.func.isRequired,
 }

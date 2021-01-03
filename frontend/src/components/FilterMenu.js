@@ -36,8 +36,8 @@ export default function FilterMenu({
       <h2>Finde deine perfekte Tour</h2>
       <CloseButton
         setStateFunction={setIsFilterActive}
-        color="#eee"
         size="30"
+        isInvertMode
       />
       <Controls>
         <label>
@@ -122,7 +122,6 @@ export default function FilterMenu({
       [filterProperty]: filterValue,
     }
     filterIsCheckbox && !filterValue && delete newFilterCriteria[filterProperty]
-    console.log(newFilterCriteria)
     setFilterCriteria(newFilterCriteria)
   }
 }
@@ -156,9 +155,9 @@ const ButtonArea = styled.div`
   gap: 10px;
   button {
     display: block;
-    border: 1px solid #eee;
+    border: 1px solid var(--text-invert-color);
     background: none;
-    color: #eee;
+    color: var(--text-invert-color);
     padding: 1em;
     font-size: 1em;
     letter-spacing: 1px;
@@ -166,7 +165,7 @@ const ButtonArea = styled.div`
   }
 
   button[type='button'] {
-    background: #eee;
+    background: var(--text-invert-color);
     border: none;
     color: var(--primary-color);
   }

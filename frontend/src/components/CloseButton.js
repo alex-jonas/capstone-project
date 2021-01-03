@@ -2,9 +2,12 @@ import styled from 'styled-components/macro'
 
 export default function CloseButton({
   setStateFunction,
-  color = '#7b7b7b',
+  isInvertMode,
   size = '40',
 }) {
+  const color = isInvertMode
+    ? 'var(--text-invert-color)'
+    : 'var(--primary-color)'
   return (
     <CloseButtonStyled type="button" onClick={() => setStateFunction(false)}>
       <svg

@@ -124,7 +124,7 @@ const Wrapper = styled.main`
 
 const FilterBar = styled.section`
   background: #fff;
-  box-shadow: 0 1px 4px 0 rgba(62, 56, 43, 0.25);
+  box-shadow: 0 1px 4px 0 var(--bar-shadow);
   text-align: center;
   padding: 0;
   position: sticky;
@@ -137,15 +137,7 @@ const FilterBar = styled.section`
 
   div {
     white-space: nowrap;
-    overflow-x: scroll;
     padding-top: 12px;
-  }
-  span {
-    background: #00000020;
-    border-radius: var(--default-border-radius);
-    padding: 0 5px;
-    margin: 0 5px;
-    display: inline;
   }
 `
 
@@ -155,6 +147,14 @@ const FilterButton = styled(ButtonDefault)`
     background-image: url(${controlsSrc});
     background-repeat: no-repeat;
     background-position-x: left;
+  }
+
+  span {
+    background: #00000020;
+    border-radius: var(--default-border-radius);
+    padding: 0 5px;
+    margin: 0 5px;
+    display: inline;
   }
 `
 

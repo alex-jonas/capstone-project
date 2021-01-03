@@ -28,7 +28,7 @@ export default function WayTypesBar({ surfaceValues }) {
 
   return (
     <Wrapper>
-      <div class="waytypes">
+      <div className="waytypes">
         {wayTypes.map(({ percentage, color }, index) => (
           <div
             key={index}
@@ -36,7 +36,7 @@ export default function WayTypesBar({ surfaceValues }) {
           ></div>
         ))}
       </div>
-      <ul class="waytypes_legend">
+      <ul className="waytypes_legend">
         {wayTypes.map(({ title, color, percentage }, index) => (
           <li key={index}>
             <svg
