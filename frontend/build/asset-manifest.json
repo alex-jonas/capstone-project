@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.js": "/static/js/main.dd8c6bf0.chunk.js",
+    "main.js.map": "/static/js/main.dd8c6bf0.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.8eef5368.js",
+    "runtime-main.js.map": "/static/js/runtime-main.8eef5368.js.map",
+    "static/js/2.07b7f82c.chunk.js": "/static/js/2.07b7f82c.chunk.js",
+    "static/js/2.07b7f82c.chunk.js.map": "/static/js/2.07b7f82c.chunk.js.map",
+    "static/js/3.4655d403.chunk.js": "/static/js/3.4655d403.chunk.js",
+    "static/js/3.4655d403.chunk.js.map": "/static/js/3.4655d403.chunk.js.map",
+    "index.html": "/index.html",
+    "static/js/2.07b7f82c.chunk.js.LICENSE.txt": "/static/js/2.07b7f82c.chunk.js.LICENSE.txt",
+    "static/media/close.9b7cb5be.svg": "/static/media/close.9b7cb5be.svg",
+    "static/media/compass.b5f06bd3.svg": "/static/media/compass.b5f06bd3.svg",
+    "static/media/controls.ed9435d2.svg": "/static/media/controls.ed9435d2.svg",
+    "static/media/load.5738ef34.svg": "/static/media/load.5738ef34.svg",
+    "static/media/marker.97b64481.svg": "/static/media/marker.97b64481.svg",
+    "static/media/mylocation.45b3fdf8.svg": "/static/media/mylocation.45b3fdf8.svg",
+    "static/media/premium.7c64958b.svg": "/static/media/premium.7c64958b.svg",
+    "static/media/startscreen.43b62095.jpg": "/static/media/startscreen.43b62095.jpg",
+    "static/media/wandergold.f5f9ae6c.svg": "/static/media/wandergold.f5f9ae6c.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8eef5368.js",
+    "static/js/2.07b7f82c.chunk.js",
+    "static/js/main.dd8c6bf0.chunk.js"
+  ]
+}
